@@ -2,7 +2,8 @@ package utils
 
 import configuration.{Configuration, ConnectionConfigurationElement}
 import data_modules.Endpoints
-import modules._
+import modules.{ConnectionResultCache, _}
+import resolvers.{Resolver, ResolverFactory}
 import weights.{Weight, WeightGenerator}
 import utils.DataStructure.DataStructureSeqExtenstions
 
@@ -33,8 +34,8 @@ class ConnectionGenerator {
 			override protected val endpointsGenerator: EndpointsGenerator = new EndpointsGenerator {
 				override val connectionConfigurationElement: ConnectionConfigurationElement = configurationElement
 			}
-			override protected var regionToEndpoints: Map[String, Endpoints] = endpoints
-			override protected def myRegionEndpoints: Endpoints = regionToEndpoints(connectionInformation.region.regionToUse)
+			override protected var endpointsContainer: EndpointsContainer = new EndpointsContainer(endpoints)
+			override protected def myRegionEndpoints: Endpoints = endpointsContainer.regionToEndpoints(connectionInformation.region.regionToUse)
 			override def name: String = connectionInformation.name
 		}
 		connection
@@ -46,6 +47,7 @@ class ConnectionGenerator {
 			override val connectionConfigurationElement: ConnectionConfigurationElement = configurationElement
 		}
 		val endpoints: Map[String, Endpoints] = buildEndpoints(endpointsGenerator, configurationElement, simpleConnections)
+		val resolver: Resolver = ResolverFactory.get(configurationElement.actions.actionResolver)
 		val connectionGroup = new ConnectionGroup {
 			override val connectionInformation: ConnectionInformation = ConnectionInformation(configurationElement)
 			override val currentRegion: String = configurationElement.region
@@ -54,10 +56,10 @@ class ConnectionGenerator {
 				override val connectionConfigurationElement: ConnectionConfigurationElement = configurationElement
 			}
 			override protected val increaseWeight: Weight = weightGenerator.generateIncrease()
-			override protected var regionToEndpoints: Map[String, Endpoints] = endpoints
+			override protected var endpointsContainer: EndpointsContainer = new EndpointsContainer(endpoints)
 			override def name: String = connectionInformation.name
-			override protected def myRegionEndpoints: Endpoints = regionToEndpoints(connectionInformation.region.regionToUse)
-
+			override protected def myRegionEndpoints: Endpoints = endpointsContainer.regionToEndpoints(connectionInformation.region.regionToUse)
+			override protected val resolver: Resolver = resolver
 		}
 		connectionGroup
 	}

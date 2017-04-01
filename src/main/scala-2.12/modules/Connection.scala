@@ -2,7 +2,7 @@ package modules
 
 import configuration.ConnectionLimitations
 import data_modules.{Angle, Endpoints, RoundRobinDTO}
-import utils.{AnglesGenerator, DistanceCalculator, Lock}
+import utils.{AnglesGenerator, Lock}
 import weights.Weight
 
 abstract class Connection {
@@ -11,7 +11,7 @@ abstract class Connection {
 
 	protected val anglesGenerator: AnglesGenerator = new AnglesGenerator
 
-	protected var regionToEndpoints: Map[String, Endpoints]
+	protected var endpointsContainer: EndpointsContainer
 	protected def myRegionEndpoints: Endpoints
 
 	val connectionInformation: ConnectionInformation
@@ -28,20 +28,15 @@ abstract class Connection {
 	lazy val connectionLimitations: ConnectionLimitations = connectionInformation.configurationElement.connectionLimitations
 	val currentRegion: String
 
-	def next(): RoundRobinDTO = {
-		val result: data_modules.Endpoint = getClosestEndpoint(anglesGenerator.generateAngle())
-		RoundRobinDTO(result.value, isSuccess = true, result.name, name)
-	}
+	def next(): RoundRobinDTO = getClosestEndpoint(anglesGenerator.generateAngle())
+	def update(result: RoundRobinDTO): Unit = if(isNonPrimitiveConnection) updateNonPrimitiveConnection(result) else updateSimpleConnection(result)
 
-	def update(result: RoundRobinDTO): Unit = {
-		if(isNonPrimitiveConnection) updateNonPrimitiveConnection(result) else updateSimpleConnection(result)
-	}
 
 	private def updateSimpleConnection(result: RoundRobinDTO) : Unit = {
-		val endpoints: Map[String, Endpoints] = endpointsGenerator.regenerateEndpoints(regionToEndpoints, result, increaseWeight, decreaseWeight)
+		val endpoints: Map[String, Endpoints] = endpointsGenerator.regenerateEndpoints(endpointsContainer.regionToEndpoints, result, increaseWeight, decreaseWeight)
 		try {
 			_lock.acquire()
-			regionToEndpoints = endpoints
+			endpointsContainer = new EndpointsContainer(endpoints)
 		}
 		finally {
 			_lock.release()
@@ -56,10 +51,10 @@ abstract class Connection {
 			myRegionEndpoints.endpoints.size)
 	}
 
-	private def getClosestEndpoint(angle: Angle): data_modules.Endpoint = {
+	private def getClosestEndpoint(angle: Angle): RoundRobinDTO = {
 		try {
 			_lock.acquire()
-			DistanceCalculator.getClosestEndpoint(myRegionEndpoints, angle)
+			endpointsContainer.getClosestEndpointDTO(angle, connectionInformation.region.regionToUse, name)
 		}
 		finally {
 			_lock.release()

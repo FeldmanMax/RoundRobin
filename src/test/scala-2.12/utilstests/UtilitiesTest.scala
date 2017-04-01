@@ -23,4 +23,14 @@ class UtilitiesTest extends FunSuite {
 		val result: String = wrapperCommands.tryCatch(action, exception)(toResponse)
 		assert(result == "1")
 	}
+
+	test("tryCatch - Action throws an exception and the catch returns -1 as string") {
+		import utils.Utilities.WrapperCommands
+		val wrapperCommands: WrapperCommands = new WrapperCommands {}
+		val action = () => throw new Exception("")
+		val exception = (ex: Exception) => "-1"
+
+		val result: String = wrapperCommands.tryCatch(action, exception)
+		assert(result == "-1")
+	}
 }

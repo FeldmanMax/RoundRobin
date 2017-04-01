@@ -17,6 +17,13 @@ package object ConfigUtils {
 				}
 			}
 		}
+
+		def getConfigOption[TResult](key: String): Option[TResult] = {
+			if(!config.hasPath(key)) {
+				None
+			}
+			else Some(config.getConfig(key).asInstanceOf[TResult])
+		}
 	}
 }
 
@@ -25,13 +32,13 @@ object Configuration {
 	import utils.Operators.OperatorsExtensions
 	import utils.DataStructure.DataStructureSeqExtenstions
 
-	private val _appConfig: Config = ConfigFactory.load()
-	private val _connectionsConfig: Config = ConfigFactory.load("connections.conf")
+	private var _appConfig: Config = ConfigFactory.load()
+	private var _connectionsConfig: Config = ConfigFactory.load("connections.conf")
 
 	private var _connections: List[ConnectionConfigurationElement] = List.empty
 	private var _connectionGenerator = new ConnectionGenerator()
 
-	val connectionRegion: String = _appConfig.getData("region", "String", "")
+	lazy val connectionRegion: String = _appConfig.getData("region", "String", "")
 
 	def getConnectionsByDependencies : List[ConnectionConfigurationElement] = {
 		val engine: ConnectionDependencyEngine = new ConnectionDependencyEngine
@@ -52,16 +59,20 @@ object Configuration {
 		getConnections.filterHead((x) => x.name == name)
 	}
 
+	def setAppConfig(config: Config): Unit = _appConfig = config
+	def setConnectionsConfig(config: Config): Unit = _connectionsConfig = config
+
 	private def createSingleConnectionElement(config: Config): ConnectionConfigurationElement = {
 		val name: String = config.getData("name", "String", "")
 		val timeoutInMillis: Int = config.getData("timeoutInMillis", "Int", -1)
+		val retries: Int = config.getData("retries", "Int", 3)
 		val region: String = config.getData("region", "String", "")
 		val listOfEndpointConfigurationElements = scala.collection.mutable.ArrayBuffer.empty[EndpointsConfigurationElement]
 		config.getConfigList("endpoints").forEach(singleEndpointConfig => listOfEndpointConfigurationElements += createEndpointPerRegion(singleEndpointConfig, region))
 		val endpointConfiguration = listOfEndpointConfigurationElements.toList
-		ConnectionConfigurationElement(name, region, timeoutInMillis, endpointConfiguration,
+		ConnectionConfigurationElement(name, region, timeoutInMillis, retries, endpointConfiguration,
 			createConnectionLimitations(config.getConfig("limitations")),
-			createConnectionActions(config.getConfig("actions")))
+			createConnectionActions(config))
 	}
 
 	private def isComplexEndpoint(config: Config) : Boolean = config.getData("connections", "String", "").nonEmpty
@@ -103,9 +114,14 @@ object Configuration {
 	}
 
 	private def createConnectionActions(config: Config): ConnectionActionsElement = {
-		ConnectionActionsElement(
-			config.getData("actionType", "String", "default"),
-			config.getData("actionResolver", "String", ""),
-			config.getData("params", "String", ""))
+		val actions: Option[Config] = config.getConfigOption("actions")
+		actions match {
+			case Some(v) => ConnectionActionsElement(v.getData("actionType", "String", "default"),
+	                                             v.getData("actionResolver", "String", ""),
+	                                             v.getData("cachingInMillis", "Int", -1),
+																							 v.getData("params", "String", ""))
+				case None => ConnectionActionsElement("None", "", -1, "")
+		}
+
 	}
 }

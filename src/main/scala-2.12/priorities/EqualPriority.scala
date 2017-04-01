@@ -4,20 +4,23 @@ import modules.{Connection, ConnectionInformation}
 import scala.annotation.tailrec
 
 class EqualPriority (val connectionInformation: ConnectionInformation) extends Priority {
-	import utils.Operators.OperatorsExtensions
-
 	private val minConnectionWeight: Int = connectionInformation.configurationElement.connectionLimitations.minConnectionWeight
 
 	override def getConnections(connections: List[Connection]): List[Connection] = {
-		val regionalConnection: Option[Connection] = connections.find(x=>x.currentRegion == connectionInformation.region.regionToUse)
+		val regionalConnection: Option[Connection] = connections.find(x=>x.connectionInformation.region.regionToUse == connectionInformation.region.regionToUse)
 		regionalConnection match {
+			case Some(connection) => getConnectionsByPriority(connection, connections)
 			case None => connections
-			case _ => getConnectionsByPriority(regionalConnection.get, connections)
 		}
 	}
 
 	private def getConnectionsByPriority(regionalConnection: Connection, connections: List[Connection]) : List[Connection] = {
-		(regionalConnection.overallPointsAmount > minConnectionWeight) ? (regionalConnection :: List.empty, getConnectionsByPriorityImpl(connections))
+		if (regionalConnection.overallPointsAmount > minConnectionWeight){
+			List(regionalConnection)
+		}
+		else{
+			getConnectionsByPriorityImpl(connections)
+		}
 	}
 
 	private def getConnectionsByPriorityImpl(connections: List[Connection]) : List[Connection] = {

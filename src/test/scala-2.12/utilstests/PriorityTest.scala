@@ -4,14 +4,14 @@ import configuration.{ConnectionActionsElement, ConnectionConfigurationElement, 
 import data_modules.RoundRobinDTO
 import modules.{Connection, ConnectionInformation, ConnectionsContainer}
 import org.scalatest.FunSuite
-import priorities.EqualPriority
+import priorities.{EqualPriority, Priority, RegionalPriority}
 
 class PriorityTest extends FunSuite {
 	test("EqualPriority - 100000 rounds, with all success, should be equally distributed") {
 		val connectionInformation: ConnectionInformation = generateBasicConnectionInformation()
 		val equalPriority: EqualPriority = new EqualPriority(connectionInformation)
-		val cspdr_hk:Connection = ConnectionsContainer.getConnection("CSPider_HK")
-		val cspdr_sg:Connection = ConnectionsContainer.getConnection("CSPider_SG")
+		val cspdr_hk:Connection = ConnectionsContainer.getConnection("CSPider_HK_NO_UPDATE")
+		val cspdr_sg:Connection = ConnectionsContainer.getConnection("CSPider_SG_NO_UPDATE")
 
 		for ( i <- 1 to 100000) {
 			val result = equalPriority.getConnections(List(cspdr_hk, cspdr_sg))
@@ -81,7 +81,7 @@ class PriorityTest extends FunSuite {
 			priority= "nevermind",
 			minConnectionWeight=20
 		)
-		val actions: ConnectionActionsElement = ConnectionActionsElement("actionType", "actionResolver", "params")
+		val actions: ConnectionActionsElement = ConnectionActionsElement("actionType", "actionResolver", 1000, "params")
 		val configurationElement: ConnectionConfigurationElement = ConnectionConfigurationElement(name, region, timeoutInMillis, endpoints, connectionLimitations, actions)
 		val connectionInformation: ConnectionInformation = ConnectionInformation(configurationElement)
 		connectionInformation

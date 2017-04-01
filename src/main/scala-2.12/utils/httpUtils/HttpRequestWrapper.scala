@@ -1,17 +1,15 @@
 package utils.httpUtils
 
 import scalaj.http.Http
-import spray.json._
 import utils.loggin.Log
 import utils.GeneralUtilities.Measurement
 
 trait HttpRequestWrapper extends Measurement {
-	def getByJson[TResult](url: String, connectionTimeout: Int, commandTimeout: Int) : Option[TResult] = {
+	def getAsString(url: String, connectionTimeout: Int, commandTimeout: Int) : Option[String] = {
 		try{
-			measure("HttpRequestWrapper.getByJson", () => {
-//				val responseAsJson = Http(url).timeout(connectionTimeout, commandTimeout).asString.toJson
-//				Some(responseAsJson.convertTo[TResult])
-				None
+			measure[String]("HttpRequestWrapper.getByJson", () => {
+				val response = Http(url).timeout(connectionTimeout, commandTimeout).asString.body
+				Some(response)
 			})
 		}
 		catch{

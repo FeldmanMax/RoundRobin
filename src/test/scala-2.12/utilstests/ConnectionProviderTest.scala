@@ -1,5 +1,7 @@
 package utilstests
 
+import com.typesafe.config.{Config, ConfigFactory}
+import configuration.Configuration
 import data_modules.RoundRobinDTO
 import modules.ConnectionsContainer
 import org.scalatest.FunSuite
@@ -23,7 +25,7 @@ class ConnectionProviderTest extends FunSuite {
 
 		for(index <- 1 to 10000) {
 			val result: RoundRobinDTO = connection.next()
-			assert(result.endpointName.contains("cspider_hk_"), "Test1")
+			assert(result.endpointName.contains("cspider__"), "Test1")
 		}
 	}
 
@@ -34,7 +36,7 @@ class ConnectionProviderTest extends FunSuite {
 			val result: RoundRobinDTO = connection.next()
 			val response: RoundRobinDTO = generateResponse(result, false)
 			connection.update(response)
-			assert(result.endpointName.contains("cspider_hk_"), "Test1")
+			assert(result.endpointName.contains("cspider__"), "Test1")
 		}
 		assert(connection.overallPointsAmount == 2, "Test2")
 	}
@@ -66,7 +68,7 @@ class ConnectionProviderTest extends FunSuite {
 		assert(result.endpointName.contains("cspider_hk"))
 	}
 
-	test("AGCDB - get next") {
+	test("AGCDB - get next to 2 points and go up to 200 points") {
 		val connection = ConnectionsContainer.getConnection("AGCDB")
 		for(index <- 1 to 200) {
 			val result: RoundRobinDTO = connection.next()
@@ -83,10 +85,60 @@ class ConnectionProviderTest extends FunSuite {
 		assert(connection.overallPointsAmount == 100, "was not increased to 100%")
 	}
 
-	test("AGCDB - reduce to 1 and increase to 100") {
+	test("AGCDB - all connections are responding") {
+		val connection = ConnectionsContainer.getConnection("AGCDB_EqualPriority")
+		var isHK: Boolean = false
+		var isSG: Boolean = false
+		for(index <- 1 to 200) {
+			val result: RoundRobinDTO = connection.next()
+			if(result.connectionName.toLowerCase.contains("hk"))
+				isHK = true
+			if(result.connectionName.toLowerCase.contains("sg"))
+				isSG = true
+		}
+
+		assert(isHK && isSG, "Not both endpoints returned")
+	}
+
+	test("AGCDB - all connections are responding with 50% for each endpoint when the endpoints are on 100%") {
+		val connection = ConnectionsContainer.getConnection("AGCDB_EqualPriority")
+		var hkAmount: Int = 0
+		var sgAmount: Int = 0
+		for(index <- 1 to 200) {
+			val result: RoundRobinDTO = connection.next()
+			if(result.connectionName.toLowerCase.contains("hk"))
+				hkAmount = hkAmount + 1
+			if(result.connectionName.toLowerCase.contains("sg"))
+				sgAmount = sgAmount + 1
+		}
+
+		assert(sgAmount >= 80 && sgAmount <= 120)
+		assert(hkAmount >= 80 && hkAmount <= 120)
+	}
+
+	test("AGCDB - get next by region") {
+		val connection = ConnectionsContainer.getConnection("AGCDB")
+		for(index <- 1 to 200) {
+			val result: RoundRobinDTO = connection.next()
+			val response: RoundRobinDTO = generateResponse(result, false)
+			connection.update(response)
+		}
+
+		assert(connection.overallPointsAmount == 2, "was not reduced to 1% and now is " + connection.overallPointsAmount)
+
+	}
+
+	/*
+	This test can run ONLY alone
+	 */
+	ignore("AGCDB - SG is the main DC and the result should be amsterdam - application/connections_001.conf") {
+		val appConfig: Config = ConfigFactory.load("application_001.conf")
+		val connectionsConfig: Config = ConfigFactory.load("connections_001.conf")
+		Configuration.setAppConfig(appConfig)
+		Configuration.setConnectionsConfig(connectionsConfig)
 		val connection = ConnectionsContainer.getConnection("AGCDB")
 		val result = connection.next()
-		assert(result.endpointName.toLowerCase.contains("cspider_hk") || result.endpointName.toLowerCase.contains("cspider_sg"))
+		assert(result.endpointName.toLowerCase.contains("cspider_am"))
 	}
 
 	private def generateResponse(request: RoundRobinDTO, isSuccess: Boolean) : RoundRobinDTO = {

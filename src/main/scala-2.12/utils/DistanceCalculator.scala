@@ -15,8 +15,13 @@ object DistanceCalculator {
 	}
 
 	def getClosestConnection(connections: Seq[Connection], angle: Angle): Connection = {
-		val connectionsToDistance: Map[Connection, Double] = connections.map(x=> (x, getClosestDistance(x, angle))).toMap
-		connectionsToDistance.minBy(x=> Math.min(x._2, angle.angle))._1
+		if(connections.size == 1) {
+			connections.head
+		}
+		else {
+			val connectionsToDistance: Map[Connection, Double] = connections.map(x => (x, getClosestDistance(x, angle))).toMap
+			connectionsToDistance.minBy(x => Math.min(x._2, angle.angle))._1
+		}
 	}
 
   /*

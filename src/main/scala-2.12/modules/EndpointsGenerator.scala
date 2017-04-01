@@ -15,6 +15,12 @@ trait EndpointsGenerator {
 	val connectionConfigurationElement: ConnectionConfigurationElement
 	lazy val connectionLimitations: ConnectionLimitations = connectionConfigurationElement.connectionLimitations
 
+	def generateEndpoints(keyPrefix: String, region: String, values: Seq[String]): Endpoints = {
+		val endpoints: Seq[data_modules.Endpoint] =
+			values.map(x=>data_modules.Endpoint(keyPrefix + x, x, anglesGenerator.generateAngles(connectionLimitations.maxPointsAmount)))
+		Endpoints(region, endpoints.toList, None)
+	}
+
 	def generateEndpoints(endpoints: List[EndpointsConfigurationElement], existingConnection: Option[List[Connection]]) : Seq[Endpoints] = {
 		val simpleConnections: Seq[EndpointsConfigurationElement] = endpoints.filterNot(x=>x.hasConnections)
 		val complexConnections: Seq[EndpointsConfigurationElement] = endpoints.filter(x=>x.hasConnections)

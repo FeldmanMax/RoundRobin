@@ -4,6 +4,7 @@ package configuration
 case class ConnectionConfigurationElement(name: String,
                                           region: String,
                                           timeoutInMillis: Int,
+                                          retries: Int,
                                           endpoints: List[EndpointsConfigurationElement],
                                           connectionLimitations: ConnectionLimitations,
                                           actions: ConnectionActionsElement) {
