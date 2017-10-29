@@ -2,16 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a93938af-98a3-41d4-bbd0-c8adb22fb374" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/scala-2.12/wrappers/HttpWrapper.scala" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/scala-2.12/wrappers/RoundRobinResult.scala" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/test/scala-2.12/utilstests/RetryMechanismTest.scala" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/test/scala-2.12/utilstests/SomeTest.scala" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/test/scala-2.12/utilstests/wrappersTests/HttpWrapperTest.scala" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/project/target/config-classes/$6151f3a35333d0dbfa93$$anonfun$$sbtdef$1.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/project/target/config-classes/$6151f3a35333d0dbfa93$.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/project/target/config-classes/$6151f3a35333d0dbfa93.cache" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/project/target/config-classes/$6151f3a35333d0dbfa93.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/scala-2.12/classes/utils/GeneralUtilities$Measurement.class" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/scala-2.12/classes/data_modules/RoundRobinDTO$.class" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/data_modules/RoundRobinDTO$.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/scala-2.12/classes/data_modules/RoundRobinDTO.class" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/data_modules/RoundRobinDTO.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/scala-2.12/classes/modules/Connection.class" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/modules/Connection.class" />
@@ -31,29 +21,7 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/scala-2.12/test-classes/utilstests/ConnectionProviderTest.class" afterPath="$PROJECT_DIR$/target/scala-2.12/test-classes/utilstests/ConnectionProviderTest.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/scala-2.12/test-classes/utilstests/PriorityTest.class" afterPath="$PROJECT_DIR$/target/scala-2.12/test-classes/utilstests/PriorityTest.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/streams/$global/dependencyPositions/$global/streams/update_cache_2.12/output_dsp" afterPath="$PROJECT_DIR$/target/streams/$global/dependencyPositions/$global/streams/update_cache_2.12/output_dsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules/roundrobin.iml" afterPath="$PROJECT_DIR$/.idea/modules/roundrobin.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logs/app_error.log" afterPath="$PROJECT_DIR$/logs/app_error.log" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logs/app_info.log" afterPath="$PROJECT_DIR$/logs/app_info.log" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/connections.conf" afterPath="$PROJECT_DIR$/src/main/resources/connections.conf" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala-2.12/configuration/Configuration.scala" afterPath="$PROJECT_DIR$/src/main/scala-2.12/configuration/Configuration.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala-2.12/configuration/ConnectionConfigurationElement.scala" afterPath="$PROJECT_DIR$/src/main/scala-2.12/configuration/ConnectionConfigurationElement.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala-2.12/data_modules/RoundRobinDTO.scala" afterPath="$PROJECT_DIR$/src/main/scala-2.12/data_modules/RoundRobinDTO.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala-2.12/modules/Connection.scala" afterPath="$PROJECT_DIR$/src/main/scala-2.12/modules/Connection.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala-2.12/modules/ConnectionGroup.scala" afterPath="$PROJECT_DIR$/src/main/scala-2.12/modules/ConnectionGroup.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala-2.12/modules/ConnectionResultCache.scala" afterPath="$PROJECT_DIR$/src/main/scala-2.12/modules/ConnectionResultCache.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala-2.12/modules/EndpointsContainer.scala" afterPath="$PROJECT_DIR$/src/main/scala-2.12/modules/EndpointsContainer.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala-2.12/resolvers/HttpResolver.scala" afterPath="$PROJECT_DIR$/src/main/scala-2.12/resolvers/HttpResolver.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala-2.12/resolvers/Resolver.scala" afterPath="$PROJECT_DIR$/src/main/scala-2.12/resolvers/Resolver.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala-2.12/resolvers/ResolverFactory.scala" afterPath="$PROJECT_DIR$/src/main/scala-2.12/resolvers/ResolverFactory.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala-2.12/utils/ConnectionGenerator.scala" afterPath="$PROJECT_DIR$/src/main/scala-2.12/utils/ConnectionGenerator.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala-2.12/utils/GeneralUtilities.scala" afterPath="$PROJECT_DIR$/src/main/scala-2.12/utils/GeneralUtilities.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala-2.12/utils/httpUtils/HttpRequestWrapper.scala" afterPath="$PROJECT_DIR$/src/main/scala-2.12/utils/httpUtils/HttpRequestWrapper.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala-2.12/wrappers/RetryMechanism.scala" afterPath="$PROJECT_DIR$/src/main/scala-2.12/wrappers/RetryMechanism.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/resources/connections.conf" afterPath="$PROJECT_DIR$/src/test/resources/connections.conf" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/scala-2.12/utilstests/ConfigurationTest.scala" afterPath="$PROJECT_DIR$/src/test/scala-2.12/utilstests/ConfigurationTest.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/scala-2.12/utilstests/ConnectionProviderTest.scala" afterPath="$PROJECT_DIR$/src/test/scala-2.12/utilstests/ConnectionProviderTest.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/scala-2.12/utilstests/PriorityTest.scala" afterPath="$PROJECT_DIR$/src/test/scala-2.12/utilstests/PriorityTest.scala" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/resolution-cache/default/roundrobin$sbt_2.12/1.0/resolved.xml.properties" afterPath="$PROJECT_DIR$/target/resolution-cache/default/roundrobin$sbt_2.12/1.0/resolved.xml.properties" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/resolution-cache/default/roundrobin$sbt_2.12/1.0/resolved.xml.xml" afterPath="$PROJECT_DIR$/target/resolution-cache/default/roundrobin$sbt_2.12/1.0/resolved.xml.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/resolution-cache/default/roundrobin$sources_2.12/1.0/resolved.xml.properties" afterPath="$PROJECT_DIR$/target/resolution-cache/default/roundrobin$sources_2.12/1.0/resolved.xml.properties" />
@@ -668,6 +636,14 @@
       <option name="presentableId" value="Default" />
       <updated>1481298192970</updated>
     </task>
+    <task id="LOCAL-00001" summary="ad">
+      <created>1509239922223</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1509239922223</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -742,6 +718,10 @@
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="ad" />
+    <option name="LAST_COMMIT_MESSAGE" value="ad" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
