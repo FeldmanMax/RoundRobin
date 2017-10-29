@@ -10,7 +10,7 @@ class ConfigurationTest extends FunSuite{
 		val element: ConnectionConfigurationElement = getConnectionByName("CSPider_SimpleEndpoints")
 
 		assert(element.name == "CSPider_SimpleEndpoints", "Test1")
-		assert(element.timeoutInMillis == 5000, "Test2")
+		assert(element.connectionTimeoutInMillis == 1000, "Test2")
 		assert(element.endpoints.length == 2, "Test3")
 		assert(element.endpoints.count(x=>x.region == "HK") == 1, "Test4")
 		assert(element.endpoints.filter(x=>x.region == "HK").head.endpoints.length == 2, "Test5")
@@ -23,7 +23,7 @@ class ConfigurationTest extends FunSuite{
 		val element: ConnectionConfigurationElement = getConnectionByName("CSPider_HK")
 
 		assert(element.name == "CSPider_HK", "Test1")
-		assert(element.timeoutInMillis == 5000, "Test2")
+		assert(element.connectionTimeoutInMillis == 1000, "Test2")
 		assert(element.endpoints.length == 1, "Test3")
 		assert(element.endpoints.filterHead((x)=>x.region == "HK").get.endpoints.length == 2, "Test4")
 		assert(element.region == "HK", "Test5")
@@ -33,7 +33,7 @@ class ConfigurationTest extends FunSuite{
 		val element: ConnectionConfigurationElement = getConnectionByName("CSPider_SG")
 
 		assert(element.name == "CSPider_SG", "Test1")
-		assert(element.timeoutInMillis == 5000, "Test2")
+		assert(element.connectionTimeoutInMillis == 1000, "Test2")
 		assert(element.endpoints.length == 1, "Test3")
 		assert(element.endpoints.filterHead((x)=>x.region == "SG").get.endpoints.length == 2, "Test4")
 		assert(element.region == "SG", "Test5")
@@ -42,7 +42,7 @@ class ConfigurationTest extends FunSuite{
 	test("Load AGCDB") {
 		val element: ConnectionConfigurationElement = getConnectionByName("AGCDB")
 		assert(element.name == "AGCDB", "Test1")
-		assert(element.timeoutInMillis == 5000, "Test2")
+		assert(element.connectionTimeoutInMillis == 1000, "Test2")
 		assert(element.region == "", "Test3")
 		assert(element.endpoints.length == 2, "Test4")
 		assert(element.endpoints.filterHead((x)=>x.region == "HK").get.hasConnections, "Test5")

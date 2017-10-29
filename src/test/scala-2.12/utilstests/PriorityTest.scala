@@ -27,7 +27,7 @@ class PriorityTest extends FunSuite {
 
 		for ( i <- 1 to 200 ) {
 			val response: RoundRobinDTO = cspdr_hk.next()
-			cspdr_hk.update(RoundRobinDTO(response.destination, false, response.endpointName, response.connectionName))
+			cspdr_hk.update(RoundRobinDTO(response.destination, false, response.endpointName, response.connectionName, 100, 100))
 		}
 
 		for ( i <- 1 to 100000) {
@@ -44,7 +44,7 @@ class PriorityTest extends FunSuite {
 
 		for ( i <- 1 to 200 ) {
 			val response: RoundRobinDTO = cspdr_hk.next()
-			cspdr_hk.update(RoundRobinDTO(response.destination, false, response.endpointName, response.connectionName))
+			cspdr_hk.update(RoundRobinDTO(response.destination, false, response.endpointName, response.connectionName, 100, 100))
 		}
 
 		for ( i <- 1 to 100000) {
@@ -54,7 +54,7 @@ class PriorityTest extends FunSuite {
 
 		while (cspdr_hk.overallPointsAmount < 40) {
 			val response: RoundRobinDTO = cspdr_hk.next()
-			cspdr_hk.update(RoundRobinDTO(response.destination, true, response.endpointName, response.connectionName))
+			cspdr_hk.update(RoundRobinDTO(response.destination, true, response.endpointName, response.connectionName, 100, 100))
 		}
 
 		for ( i <- 1 to 100000) {
@@ -66,7 +66,9 @@ class PriorityTest extends FunSuite {
 	private def generateBasicConnectionInformation() : ConnectionInformation = {
 		val name: String = "s_name"
 		val region: String = "HK"
-		val timeoutInMillis: Int = 500
+		val connectionTimeoutInMillis: Int = 500
+		val commandTimeoutInMillis: Int = 500
+		val retriesAmount: Int = 4
 		val endpoints: List[EndpointsConfigurationElement] = List[EndpointsConfigurationElement] {
 			EndpointsConfigurationElement("HK", List.empty, List.empty)
 		}
@@ -82,7 +84,7 @@ class PriorityTest extends FunSuite {
 			minConnectionWeight=20
 		)
 		val actions: ConnectionActionsElement = ConnectionActionsElement("actionType", "actionResolver", 1000, "params")
-		val configurationElement: ConnectionConfigurationElement = ConnectionConfigurationElement(name, region, timeoutInMillis, endpoints, connectionLimitations, actions)
+		val configurationElement: ConnectionConfigurationElement = ConnectionConfigurationElement(name, region, connectionTimeoutInMillis, commandTimeoutInMillis, retriesAmount, endpoints, connectionLimitations, actions)
 		val connectionInformation: ConnectionInformation = ConnectionInformation(configurationElement)
 		connectionInformation
 	}

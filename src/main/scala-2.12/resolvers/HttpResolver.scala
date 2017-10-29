@@ -2,12 +2,8 @@ package resolvers
 
 import utils.httpUtils.HttpRequestWrapper
 
-class HttpResolver(val connectionTimeout: Int,
-                   val commandTimeout: Int)
-	extends HttpRequestWrapper
-		with Resolver{
-
-	override def resolve(command: String): Option[String] = {
+class HttpResolver() extends HttpRequestWrapper with Resolver{
+	override def resolve(command: String, connectionTimeout: Int, commandTimeout: Int): Option[String] = {
 		getAsString(command, commandTimeout, commandTimeout)
 	}
 }

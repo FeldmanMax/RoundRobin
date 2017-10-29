@@ -3,7 +3,8 @@ package configuration
 
 case class ConnectionConfigurationElement(name: String,
                                           region: String,
-                                          timeoutInMillis: Int,
+                                          connectionTimeoutInMillis: Int,
+                                          commandTimeoutInMillis: Int,
                                           retries: Int,
                                           endpoints: List[EndpointsConfigurationElement],
                                           connectionLimitations: ConnectionLimitations,

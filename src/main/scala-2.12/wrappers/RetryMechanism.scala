@@ -1,33 +1,33 @@
 package wrappers
 
 import modules.ConnectionInformation
+import utils.loggin.Log
 
-trait RetryMechanism {
+trait RetryMechanism[TResult] {
 
-	val connectionInfo: ConnectionInformation = _
+	val connectionInfo: ConnectionInformation
 
-	def performAction[TResult](action: () => Option[RetryResult[TResult]], postAction: () => Unit, commandName: String): Option[TResult] = {
+	def performAction(action: (String) => Option[RetryResult[TResult]], postAction: () => Unit, commandName: String): Option[RetryResult[TResult]] = {
 		val maxRetries = connectionInfo.configurationElement.retries
-		var currentTry: Int = 1
+		var currentTry: Int = 0
+		var result: Option[RetryResult[TResult]] = Option(RetryResult[TResult](false, None))
 		try {
-			var result: Option[TResult] = None
-			while(currentTry <= maxRetries) {
-				action() match {
-					case Some(retryResult) => {
-						if(retryResult.isSuccess)
-							result = retryResult.result
-					}
-				}
+			while (currentTry < maxRetries) {
+				action(connectionInfo.name) match {
+					case Some(retryResult) =>
+						if (retryResult.isSuccess) {
+							result = Option(retryResult)
+							currentTry = maxRetries
+						}
 
+					case None => Log.exception(commandName + s" failed try number $currentTry")
+				}
+				currentTry = currentTry + 1
 			}
 			result
 		}
 		finally{
 			postAction()
 		}
-	}
-
-	private def internalPostAction(command: String, amountOfRetries: Int, exception: Option[Exception] = None): Unit = {
-
 	}
 }

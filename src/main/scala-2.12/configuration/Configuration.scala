@@ -63,14 +63,16 @@ object Configuration {
 	def setConnectionsConfig(config: Config): Unit = _connectionsConfig = config
 
 	private def createSingleConnectionElement(config: Config): ConnectionConfigurationElement = {
-		val name: String = config.getData("name", "String", "")
-		val timeoutInMillis: Int = config.getData("timeoutInMillis", "Int", -1)
-		val retries: Int = config.getData("retries", "Int", 3)
-		val region: String = config.getData("region", "String", "")
+		val name: String                        = config.getData("name", "String", "")
+		val connectionTimeoutInMillis: Int      = config.getData("connectionTimeoutInMillis", "Int", -1)
+		val commandTimeoutInMillis: Int         = config.getData("commandTimeoutInMillis", "Int", -1)
+		val retries: Int                        = config.getData("retries", "Int", 3)
+		val region: String                      = config.getData("region", "String", "")
 		val listOfEndpointConfigurationElements = scala.collection.mutable.ArrayBuffer.empty[EndpointsConfigurationElement]
+		
 		config.getConfigList("endpoints").forEach(singleEndpointConfig => listOfEndpointConfigurationElements += createEndpointPerRegion(singleEndpointConfig, region))
 		val endpointConfiguration = listOfEndpointConfigurationElements.toList
-		ConnectionConfigurationElement(name, region, timeoutInMillis, retries, endpointConfiguration,
+		ConnectionConfigurationElement(name, region, connectionTimeoutInMillis, commandTimeoutInMillis, retries, endpointConfiguration,
 			createConnectionLimitations(config.getConfig("limitations")),
 			createConnectionActions(config))
 	}

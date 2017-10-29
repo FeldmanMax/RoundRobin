@@ -1,6 +1,6 @@
 package modules
 
-import configuration.ConnectionLimitations
+import configuration.{ConnectionConfigurationElement, ConnectionLimitations}
 import data_modules.{Angle, Endpoints, RoundRobinDTO}
 import utils.{AnglesGenerator, Lock}
 import weights.Weight
@@ -25,7 +25,7 @@ abstract class Connection {
 	def isNonPrimitiveConnection: Boolean = connectionInformation.configurationElement.hasNonPrimitiveConnections
 	def connectionAngles: List[Angle] = connectionInformation.angles
 	lazy val priority: String = connectionLimitations.priority
-	lazy val connectionLimitations: ConnectionLimitations = connectionInformation.configurationElement.connectionLimitations
+	def connectionLimitations: ConnectionLimitations = connectionInformation.configurationElement.connectionLimitations
 	val currentRegion: String
 
 	def next(): RoundRobinDTO = getClosestEndpoint(anglesGenerator.generateAngle())
@@ -54,7 +54,7 @@ abstract class Connection {
 	private def getClosestEndpoint(angle: Angle): RoundRobinDTO = {
 		try {
 			_lock.acquire()
-			endpointsContainer.getClosestEndpointDTO(angle, connectionInformation.region.regionToUse, name)
+			endpointsContainer.getClosestEndpointDTO(angle, connectionInformation.region.regionToUse, name, connectionInformation.configurationElement.connectionTimeoutInMillis, connectionInformation.configurationElement.commandTimeoutInMillis)
 		}
 		finally {
 			_lock.release()

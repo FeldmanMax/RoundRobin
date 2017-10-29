@@ -1,13 +1,14 @@
 package utils.httpUtils
 
-import scalaj.http.Http
-import utils.loggin.Log
 import utils.GeneralUtilities.Measurement
 
-trait HttpRequestWrapper extends Measurement {
+import scalaj.http.Http
+import utils.loggin.Log
+
+trait HttpRequestWrapper {
 	def getAsString(url: String, connectionTimeout: Int, commandTimeout: Int) : Option[String] = {
 		try{
-			measure[String]("HttpRequestWrapper.getByJson", () => {
+			Measurement.measure[String]("HttpRequestWrapper.getAsString", () => {
 				val response = Http(url).timeout(connectionTimeout, commandTimeout).asString.body
 				Some(response)
 			})

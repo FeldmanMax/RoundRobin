@@ -47,7 +47,6 @@ class ConnectionGenerator {
 			override val connectionConfigurationElement: ConnectionConfigurationElement = configurationElement
 		}
 		val endpoints: Map[String, Endpoints] = buildEndpoints(endpointsGenerator, configurationElement, simpleConnections)
-		val resolver: Resolver = ResolverFactory.get(configurationElement.actions.actionResolver)
 		val connectionGroup = new ConnectionGroup {
 			override val connectionInformation: ConnectionInformation = ConnectionInformation(configurationElement)
 			override val currentRegion: String = configurationElement.region
@@ -59,7 +58,7 @@ class ConnectionGenerator {
 			override protected var endpointsContainer: EndpointsContainer = new EndpointsContainer(endpoints)
 			override def name: String = connectionInformation.name
 			override protected def myRegionEndpoints: Endpoints = endpointsContainer.regionToEndpoints(connectionInformation.region.regionToUse)
-			override protected val resolver: Resolver = resolver
+			override protected val resolver: Resolver = ResolverFactory.get(configurationElement.actions.actionResolver)
 		}
 		connectionGroup
 	}

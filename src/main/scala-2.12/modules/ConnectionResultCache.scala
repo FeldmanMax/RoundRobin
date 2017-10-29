@@ -50,7 +50,7 @@ class ConnectionResultCache(val resolver: Resolver,
 		actions.actionResolver match {
 			case "Http" =>
 				val next: RoundRobinDTO = destFunc()
-				val response = resolver.resolve(StringUtils.replace(next.destination, actions.mappedParams))
+				val response = resolver.resolve(StringUtils.replace(next.destination, actions.mappedParams), next.connectionTimeout, next.commandTimeout)
 				val container: EndpointsContainer = generateEndpointsContainer(next, response)
 				Some(container)
 		}

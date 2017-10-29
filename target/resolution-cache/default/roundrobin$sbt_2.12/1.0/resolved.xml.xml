@@ -4,7 +4,7 @@
 		module="roundrobin$sbt_2.12"
 		revision="1.0"
 		status="integration"
-		publication="20170309231425"
+		publication="20170827132835"
 	/>
 	<configurations>
 		<conf name="default" visibility="public"/>

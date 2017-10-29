@@ -703,9 +703,9 @@
 [debug] 	[NOT REQUIRED] org.scala-sbt#test-agent;0.13.8!test-agent.jar
 [debug] 	[NOT REQUIRED] org.scala-sbt#test-interface;1.0!test-interface.jar
 [debug] 	[NOT REQUIRED] org.scala-sbt#apply-macro;0.13.8!apply-macro.jar
-[debug] :: resolution report :: resolve 783ms :: artifacts dl 23ms
+[debug] :: resolution report :: resolve 1681ms :: artifacts dl 80ms
 [debug] 	report for default#roundrobin$sbt_2.12;1.0 default produced in /Users/maksik1/IdeaProjects/RoundRobin/target/resolution-cache/reports/default-roundrobin$sbt_2.12-default.xml
-[debug] 	resolve done (783ms resolve - 23ms download)
+[debug] 	resolve done (1681ms resolve - 80ms download)
 [debug] Using inline dependencies specified in Scala.
 [debug] :: resolving dependencies :: default#roundrobin$sources_2.12;1.0
 [debug] 	confs: [default]
@@ -1069,6 +1069,6 @@
 [debug] 	[NOT REQUIRED] org.scala-sbt#precompiled-2_8_2;0.13.8!precompiled-2_8_2.jar(src)
 [debug] 	[NOT REQUIRED] org.scala-sbt#precompiled-2_9_2;0.13.8!precompiled-2_9_2.jar(src)
 [debug] 	[NOT REQUIRED] org.scala-sbt#precompiled-2_9_3;0.13.8!precompiled-2_9_3.jar(src)
-[debug] :: resolution report :: resolve 137ms :: artifacts dl 21ms
+[debug] :: resolution report :: resolve 355ms :: artifacts dl 76ms
 [debug] 	report for default#roundrobin$sources_2.12;1.0 default produced in /Users/maksik1/IdeaProjects/RoundRobin/target/resolution-cache/reports/default-roundrobin$sources_2.12-default.xml
-[debug] 	resolve done (137ms resolve - 21ms download)
+[debug] 	resolve done (355ms resolve - 76ms download)

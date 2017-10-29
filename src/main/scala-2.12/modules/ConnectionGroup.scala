@@ -60,7 +60,7 @@ abstract class ConnectionGroup extends Connection {
 	private def getResolved: RoundRobinDTO = {
 		val endpointsContainer: Option[EndpointsContainer] = connectionResultCache.getEndpoints
 		endpointsContainer match {
-			case Some(v) => v.getClosestEndpointDTO(anglesGenerator.generateAngle(), connectionInformation.region.regionToUse, name)
+			case Some(v) => v.getClosestEndpointDTO(anglesGenerator.generateAngle(), connectionInformation.region.regionToUse, name, connectionInformation.configurationElement.connectionTimeoutInMillis, connectionInformation.configurationElement.commandTimeoutInMillis)
 			case None => getConnection.next()
 		}
 	}

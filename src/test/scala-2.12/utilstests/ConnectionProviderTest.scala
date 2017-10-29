@@ -142,6 +142,6 @@ class ConnectionProviderTest extends FunSuite {
 	}
 
 	private def generateResponse(request: RoundRobinDTO, isSuccess: Boolean) : RoundRobinDTO = {
-		RoundRobinDTO(request.destination, isSuccess, request.endpointName, request.connectionName)
+		RoundRobinDTO(request.destination, isSuccess, request.endpointName, request.connectionName, 100, 100)
 	}
 }

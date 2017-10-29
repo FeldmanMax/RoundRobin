@@ -5,7 +5,7 @@ import utils.loggin.Log
 
 object GeneralUtilities {
 
-	trait Measurement {
+	object Measurement {
 		def measure(name: String, func: () => Unit) = {
 			val dateTime: DateTime = new DateTime()
 			val startTime: Int = dateTime.millisOfDay().get()

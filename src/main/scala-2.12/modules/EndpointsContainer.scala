@@ -8,8 +8,9 @@ class EndpointsContainer(val regionToEndpoints: Map[String, Endpoints]) {
 			DistanceCalculator.getClosestEndpoint(regionToEndpoints(region), angle)
 	}
 
-	def getClosestEndpointDTO(angle: Angle, region: String, connectionName: String): RoundRobinDTO = {
+	def getClosestEndpointDTO(angle: Angle, region: String, connectionName: String,
+	                          connectionTimeoutInMillis: Int, commandTimeoutInMillis: Int): RoundRobinDTO = {
 		val endpoint: Endpoint = getClosestEndpoint(angle, region)
-		RoundRobinDTO(endpoint.value, isSuccess = true, endpoint.name, connectionName )
+		RoundRobinDTO(endpoint.value, isSuccess = true, endpoint.name, connectionName, connectionTimeoutInMillis, commandTimeoutInMillis)
 	}
 }
