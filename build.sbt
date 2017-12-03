@@ -5,7 +5,7 @@ version := "0.1"
 scalaVersion := "2.12.4"
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.0" % "test"
-libraryDependencies += "com.typesafe" % "config" % "1.3.0"
+libraryDependencies += "com.typesafe" % "config" % "1.3.1"
 libraryDependencies += "org.scalaj" %% "scalaj-http" % "2.3.0"
 libraryDependencies += "io.spray" %%  "spray-json" % "1.3.3"
 libraryDependencies += "com.typesafe.scala-logging" %% "scala-logging" % "3.5.0"

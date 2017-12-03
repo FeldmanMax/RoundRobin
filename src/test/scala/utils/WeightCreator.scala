@@ -1,6 +1,7 @@
 package utils
 
-import models.{Weight, Point}
+import cache.ConnectionsCache
+import models.{Point, Weight}
 import services.PointsService
 
 trait WeightCreator {
@@ -11,6 +12,8 @@ trait WeightCreator {
 		Weight(groupName, pointsService.getPoints(amount) ::: points)
 	}
 	def getWeight(name: String, quantity: Int): Weight = {
-		Weight(name, pointsService.getPoints(quantity))
+		val weight: Weight = Weight(name, pointsService.getPoints(quantity))
+		ConnectionsCache.weightCache.put(name, weight)
+		weight
 	}
 }

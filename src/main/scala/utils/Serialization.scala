@@ -18,6 +18,14 @@ object Serialization {
 		}
 
 		def deserialize[T: Manifest](value: String): T = mapper.readValue[T](value)
+		def deserializeSafe[T: Manifest](value: String): Either[String, T] = {
+			try {
+				Right(deserialize(value))
+			}
+			catch {
+				case ex: Exception => Left(ex.getMessage)
+			}
+		}
 	}
 }
 

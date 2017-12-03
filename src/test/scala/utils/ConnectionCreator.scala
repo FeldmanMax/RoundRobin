@@ -7,9 +7,11 @@ trait ConnectionCreator extends WeightCreator {
 	def getConnection(generalInfo: ConnectionGeneralInfo, nameToWeight: Map[String, Int]): Connection = {
 		val endpoints: Map[String, ConnectionEndpoint] = nameToWeight
 			.map { case (name, weight) => getWeight(name, weight) }
-			.map(weight => weight.name -> ConnectionEndpoint(weight.name, "", weight)).toMap
-		Connection(generalInfo, endpoints)
+			.map { weight => weight.name -> ConnectionEndpoint(weight.name, "") }.toMap
+		Connection(generalInfo, endpoints.values.toList)
 	}
+
+  def getDefaultConnection(name: String): Connection = getConnection(ConnectionGeneralInfo(name), Map("first" -> 100))
 
 	def getSerializedConnection(): String = {
     val connection: Connection = getConnection(ConnectionGeneralInfo("test"), Map("first" -> 100))

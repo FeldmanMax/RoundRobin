@@ -1,12 +1,17 @@
 package cache
 
+import models.{Connection, Weight}
+
 object ConnectionsCache {
   import scala.concurrent.ExecutionContext.Implicits._
-	private val connectionsCache = TimedCache.apply[String, String]()
+	private val connectionsCache = TimedCache.apply[String, Connection]()
+  private val weightsCache = TimedCache.apply[String, Weight]()
   def connectionCache = connectionsCache
+  def weightCache = weightsCache
 }
 
-class TimedCache[Key<:Object, Value<:Object](val concurrencyLevel: Int=4, val timeoutMinutes: Int=5)
+class TimedCache[Key<:Object, Value<:Object](val concurrencyLevel:  Int=6,
+                                             val timeoutMinutes:    Int=10)
 																						(implicit ec: scala.concurrent.ExecutionContext) {
 	import java.util.concurrent.{Callable, TimeUnit}
 	import com.google.common.cache.{Cache, CacheBuilder}
@@ -23,6 +28,24 @@ class TimedCache[Key<:Object, Value<:Object](val concurrencyLevel: Int=4, val ti
 			override def call: Value = defaultValue
 		}
 	)
+
+  @inline def getWithError(key: Key): Either[String, Value] = {
+    try{
+      val result = gCache.getIfPresent(key)
+      if(result == null)  Left(s"Key $key was not found")
+      else                Right(result)
+    }
+    catch {
+      case ex: Exception => Left(ex.getMessage)
+    }
+  }
+
+  @inline def getOrAdd(key: Key, default: Value): Either[String, Value] = {
+    if(gCache.getIfPresent(key) == null) {
+      put(key, default)
+    }
+    getWithError(key)
+  }
 
 	@inline def getAsyncWithDefault(key: Key, defaultValue: => Value): Future[Value] =
 		Future { getWithDefault(key, defaultValue) }
