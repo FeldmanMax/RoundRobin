@@ -1,0 +1,16 @@
+{
+  "info": {
+    "name": "connection_1_test",
+    "isUsingConnections": true
+  },
+  "endpointsList": [
+    {
+      "name": "endpoint_1",
+      "value": "connection_1"
+    },
+    {
+      "name": "endpoint_2",
+      "value": "value_1_2"
+    }
+  ]
+}

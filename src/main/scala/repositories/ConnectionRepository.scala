@@ -1,15 +1,15 @@
 package repositories
 
-import cache.ConnectionsCache
+import cache.TimedCache
 import models.Connection
 
-class ConnectionRepository() {
+class ConnectionRepository(val cache: TimedCache[String, Connection]) {
 
   def get(name: String): Either[String, Connection] = {
-    ConnectionsCache.connectionCache.getWithError(name)
+    cache.getWithError(name)
   }
 
   def add(key: String, connection: Connection): Unit = {
-    ConnectionsCache.connectionCache.put(connection.key, connection)
+    cache.put(connection.key, connection)
   }
 }

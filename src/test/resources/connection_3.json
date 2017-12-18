@@ -1,0 +1,34 @@
+[
+  {
+    "info": {
+      "name": "connection_1_test",
+      "isUsingConnections": true
+    },
+    "endpointsList": [
+      {
+        "name": "endpoint_1",
+        "value": "value_1_1"
+      },
+      {
+        "name": "endpoint_2",
+        "value": "value_1_2"
+      }
+    ]
+  },
+  {
+    "info": {
+      "name": "connection_2_test",
+      "isUsingConnections": true
+    },
+    "endpointsList": [
+      {
+        "name": "endpoint_1",
+        "value": "value_2_1"
+      },
+      {
+        "name": "endpoint_2",
+        "value": "value_2_2"
+      }
+    ]
+  }
+]

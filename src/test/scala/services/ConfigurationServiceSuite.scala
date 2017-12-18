@@ -14,8 +14,32 @@ class ConfigurationServiceSuite extends FunSuite with ConfigurationServiceCreato
     loadedConnection match {
       case Left(left) => assert(false, left)
       case Right(conn) =>
-        val end = conn.endpoints
         assert(conn.endpoints.size == 2)
+    }
+  }
+
+  test("load connection_2") {
+    val service: ConfigurationService = configServiceWithFileConfiguration()
+    val loadedConnection: Either[String, Connection] = for {
+      connection <- service.loadConnection("connection_2").right
+    } yield connection
+
+    loadedConnection match {
+      case Left(left) => assert(false, left)
+      case Right(conn) =>
+        assert(conn.info.isUsingConnections)
+    }
+  }
+
+  test("load connection_3") {
+    val service: ConfigurationService = configServiceWithFileConfiguration()
+    val loadedConnection: Either[String, List[Connection]] = for {
+      connection <- service.loadConnections("connection_3").right
+    } yield connection
+
+    loadedConnection match {
+      case Left(left) => assert(false, left)
+      case Right(conn) => assert(conn.size == 2)
     }
   }
 }

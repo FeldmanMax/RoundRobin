@@ -1,38 +1,63 @@
 package services
 
-import models.{Connection, ConnectionGeneralInfo, WeightRate}
+import cache.TimedCache
+import models.{Connection, ConnectionGeneralInfo, Weight, WeightRate}
 import org.scalatest.{BeforeAndAfter, FunSuite}
-import repositories.{ConnectionRepository, WeightRepository}
-import utils.{ConfigurationServiceCreator, ConnectionCreator}
+import utils.{ConfigurationServiceCreator, ConnectionCreator, ConnectionServiceCreator}
+import scala.concurrent.ExecutionContext.Implicits.global
 
-class ConnectionServiceSuite extends FunSuite with BeforeAndAfter with ConnectionCreator  with ConfigurationServiceCreator {
-	private var connectionService: ConnectionService = _
-	before {
-		connectionService = new ConnectionService(new WeightService(new PointsService(), new WeightRepository()), new ConnectionRepository(),
-			configServiceWithFileConfiguration())
-	}
+class ConnectionServiceSuite extends FunSuite
+	with BeforeAndAfter
+	with ConnectionCreator
+	with ConfigurationServiceCreator
+	with ConnectionServiceCreator {
 
 	test("next endpoint - equal distribution") {
-		val connection: Connection = getConnection(ConnectionGeneralInfo("name"), Map("endpoint_a" -> 100, "endpoint_b" -> 100, "endpoint_c" -> 100, "endpoint_d" -> 100))
+		val endpointPrefix: String = "endpoint"
+		val endpoint_a = s"${endpointPrefix}_a"
+		val endpoint_b = s"${endpointPrefix}_b"
+		val endpoint_c = s"${endpointPrefix}_c"
+		val endpoint_d = s"${endpointPrefix}_d"
+		val connectionService = getConnectionService()
+		val connection: Connection = getConnection(ConnectionGeneralInfo("name"), Map(endpoint_a -> 100, endpoint_b -> 100, endpoint_c -> 100, endpoint_d -> 100))
 
 		val arrayBuffer: Array[Int] = new Array[Int](4)
 		val rounds: Int = 40000
 		val avg: Int = rounds / connection.endpoints.size
+
+		val connectionWeightList_1: String = connectionService.connectionWeightList(connection) mkString ""
+
 		(0 until rounds).foreach { _ =>
 			connectionService.next(connection).right.foreach { endpoint =>
-				val index: Int = if(endpoint.endpointName == "endpoint_a") 0
-				else if(endpoint.endpointName == "endpoint_b") 1
-				else if(endpoint.endpointName == "endpoint_c") 2
-				else if(endpoint.endpointName == "endpoint_d") 3
-				else throw new Exception("")
+				val index: Int = endpoint.endpointName match {
+					case "endpoint_a" => 0
+					case "endpoint_b" => 1
+					case "endpoint_c" => 2
+					case "endpoint_d" => 3
+					case _ => throw new Exception("")
+				}
 				arrayBuffer.update(index, arrayBuffer(index)+1)
 			}
 		}
 
-		arrayBuffer.foreach(count => assert(isWithinRatio(avg, count, 0.3), s"Avg: $avg, Count:$count"))
+		val connectionWeightList_2: String = connectionService.connectionWeightList(connection) mkString " "
+
+		arrayBuffer.toList.indices.map { id =>
+			val count = arrayBuffer(id)
+			assert(isWithinRatio(avg, count, 0.3),
+				s"Avg: $avg, \n" +
+					s"$connectionWeightList_1 \n" +
+					s"$connectionWeightList_2 \n" +
+					s"${arrayBuffer.toList.indices.map(x=>x -> arrayBuffer(x)).toMap}")
+		}
 	}
 
 	test("next endpoint - first will have twice as much") {
+		val cache = createCache(
+			Map("endpoint_a" -> Weight("endpoint_a", pointsService.getPoints(100)),
+				"endpoint_b" -> Weight("endpoint_b", pointsService.getPoints(50)))
+		)
+		val connectionService: ConnectionService = getConnectionService(Some(cache))
 		val connection: Connection = getConnection(ConnectionGeneralInfo("name"), Map("endpoint_a" -> 100, "endpoint_b" -> 50))
 		val arrayBuffer: Array[Int] = new Array[Int](2)
 		val rounds: Int = 40000
@@ -50,6 +75,12 @@ class ConnectionServiceSuite extends FunSuite with BeforeAndAfter with Connectio
 	}
 
 	test("next with single negative update") {
+		val cache = createCache(
+			Map("endpoint_a" -> Weight("endpoint_a", pointsService.getPoints(100)),
+					"endpoint_b" -> Weight("endpoint_b", pointsService.getPoints(50)))
+		)
+
+		val connectionService: ConnectionService = getConnectionService(Some(cache))
 		val connection: Connection = getConnection(ConnectionGeneralInfo("name"), Map("endpoint_a" -> 100, "endpoint_b" -> 50))
 		val weightRate: WeightRate = WeightRate(isSuccess = false, isPercent = false, 10)
 		connectionService.update(endpointName = "endpoint_a", weightRate).right.foreach { result =>
@@ -58,6 +89,11 @@ class ConnectionServiceSuite extends FunSuite with BeforeAndAfter with Connectio
 	}
 
 	test("next with bad update params") {
+		val cache = createCache(
+			Map("endpoint_a" -> Weight("endpoint_a", pointsService.getPoints(100)),
+					"endpoint_b" -> Weight("endpoint_b", pointsService.getPoints(50)))
+		)
+		val connectionService: ConnectionService = getConnectionService(Some(cache))
 		val connection: Connection = getConnection(ConnectionGeneralInfo("name"), Map("endpoint_a" -> 100, "endpoint_b" -> 50))
 		val weightRate: WeightRate = WeightRate(isSuccess = false, isPercent = false, 1000)
 		connectionService.update(endpointName = "endpoint_a", weightRate).right.foreach { result =>
@@ -66,6 +102,7 @@ class ConnectionServiceSuite extends FunSuite with BeforeAndAfter with Connectio
 	}
 
 	test("next with connection_1 which will be loaded from config file") {
+		val connectionService: ConnectionService = getConnectionService()
 		val arrayBuffer: Array[Int] = new Array[Int](2)
 		val rounds: Int = 40000
 		(0 until rounds).foreach { _ =>
@@ -83,5 +120,11 @@ class ConnectionServiceSuite extends FunSuite with BeforeAndAfter with Connectio
 		val min: Int = (avg * (1 - delta)).toInt
 		val max: Int = (avg * (1 + delta)).toInt
 		amount > min && amount < max
+	}
+
+	private def createCache(nameToWeight: Map[String, Weight]): TimedCache[String, Weight] = {
+		val cache = TimedCache.apply[String, Weight]()
+		nameToWeight.foreach { case (name, weight) => cache.put(name, weight)}
+		cache
 	}
 }

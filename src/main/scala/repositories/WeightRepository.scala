@@ -1,14 +1,9 @@
 package repositories
 
-import cache.ConnectionsCache
 import models.Weight
 
-class WeightRepository() {
+trait WeightRepository {
 
-  def get(name: String, default: Option[Weight] = None): Either[String, Weight] = {
-    default match {
-      case None => ConnectionsCache.weightCache.getWithError(name)
-      case Some(weight) => ConnectionsCache.weightCache.getOrAdd(name, weight)
-    }
-  }
+  def get(name: String, default: Option[Weight] = None): Either[String, Weight]
+  def updateWeight(weightName: String, weight: Weight): Either[String, Weight]
 }

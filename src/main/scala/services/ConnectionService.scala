@@ -32,22 +32,18 @@ class ConnectionService(val weightService: WeightService,
 		}
 	}
 
-  def update(endpointName: String, weightRate: WeightRate): Either[String, Weight] = {
-    weightService.updateWeight(endpointName, weightRate)
-	}
+  def update(endpointName: String, weightRate: WeightRate): Either[String, Weight] = weightService.updateWeight(endpointName, weightRate)
 
   def getWeight(connection: Connection): Int = {
     connection.endpoints.map { case(_, endpoint) =>
       weightService.getOrDefault(endpoint.name) match {
-        case Left(_) => 100
-        case Right(right) =>
-          val size = right.size
-          size
+        case Left(_)      => 100
+        case Right(right) => right.size
       }
     }.sum
   }
 
-  private def connectionWeightList(connection: Connection): List[Weight] = {
+  def connectionWeightList(connection: Connection): List[Weight] = {
     connection.endpoints.keys.map { endpointName =>
       weightService.getOrDefault(endpointName, Option(weightService.create(endpointName)))
     }.filter(x=>x.isRight).map(x=>x.right.get).toList

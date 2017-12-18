@@ -4,8 +4,8 @@ import models.{Connection, Weight}
 
 object ConnectionsCache {
   import scala.concurrent.ExecutionContext.Implicits._
-	private val connectionsCache = TimedCache.apply[String, Connection]()
-  private val weightsCache = TimedCache.apply[String, Weight]()
+	private val connectionsCache: TimedCache[String, Connection] = TimedCache.apply[String, Connection]()
+  private val weightsCache: TimedCache[String, Weight] = TimedCache.apply[String, Weight]()
   def connectionCache = connectionsCache
   def weightCache = weightsCache
 }
