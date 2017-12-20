@@ -1,15 +1,17 @@
-{
+[
+  {
     "info": {
-      "name": "connection_1_test"
+      "name": "endpoints_A"
     },
     "endpointsList": [
       {
-        "name": "endpoint_1",
-        "value": "value_1_1"
+        "name": "endpoint_a_1",
+        "value": "value_a_1"
       },
       {
-        "name": "endpoint_2",
-        "value": "value_1_2"
+        "name": "endpoint_a_2",
+        "value": "value_a_2"
       }
     ]
-}
+  }
+]

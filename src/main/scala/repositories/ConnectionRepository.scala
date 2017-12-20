@@ -9,6 +9,10 @@ class ConnectionRepository(val cache: TimedCache[String, Connection]) {
     cache.getWithError(name)
   }
 
+  def getOrAdd(name: String, func: => Connection) = {
+    cache.getOrAdd(name)(func)
+  }
+
   def add(key: String, connection: Connection): Unit = {
     cache.put(connection.key, connection)
   }

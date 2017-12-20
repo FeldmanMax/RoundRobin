@@ -7,7 +7,7 @@ trait ConnectionCreator extends WeightCreator {
 	def getConnection(generalInfo: ConnectionGeneralInfo, nameToWeight: Map[String, Int]): Connection = {
 		val endpoints: Map[String, ConnectionEndpoint] = nameToWeight
 			.map { case (name, weight) => getWeight(name, weight) }
-			.map { weight => weight.name -> ConnectionEndpoint(weight.name, "") }.toMap
+			.map { weight => weight.endPointName -> ConnectionEndpoint(weight.endPointName, "") }.toMap
 		Connection(generalInfo, endpoints.values.toList)
 	}
 

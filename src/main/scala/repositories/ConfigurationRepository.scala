@@ -17,8 +17,25 @@ class FileConfigurationRepository(val fileService: FileSystemService) extends Co
   }
 
   def loadConnection(name: String): Either[String, Connection] = {
-    fileService.loadFile(s"$configurationLocation$name.json").right.flatMap { data =>
-      Right(JsonSerialization.deserialize[Connection](data))
+    fileService.filesByExtension(configurationLocation, ".json").right.flatMap { files =>
+      val results: List[Either[String, List[Connection]]] = files.map { fileName =>
+        fileService.loadFile(s"$configurationLocation$fileName").right.flatMap { data =>
+          Right(JsonSerialization.deserialize[List[Connection]](data))
+        }
+      }
+      Right(results)
+    }.right.flatMap { list =>
+      val errorsToConnections = list.foldRight((List.empty[String], List.empty[Connection])) {
+        case (collector, (leftResult, rightResult)) =>
+          collector.fold(left => (left :: leftResult, rightResult), right => (leftResult, right ::: rightResult))
+      }
+      Right(errorsToConnections)
+    }.right.flatMap { case (errors, connections) =>
+      if(errors.nonEmpty) Left(errors mkString "\n")
+      else                connections.find(conn => conn.info.name == name) match {
+                            case None => Left("Not found")
+                            case Some(retValue) => Right(retValue)
+                          }
     }
   }
 

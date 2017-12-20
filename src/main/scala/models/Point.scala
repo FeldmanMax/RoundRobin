@@ -11,8 +11,8 @@ case class Point(x: Double, y: Double) {
 	override def toString: String = s"(x:$x, y:$y)"
 }
 
-case class Weight(name: String, points: List[Point]) {
+case class Weight(endPointName: String, points: List[Point]) {
 	def - (other: Point): Double = points.map(x=>x - other).min
 	def size: Int = points.length
-	override def toString: String = s"name: $name, amount: ${points.size}"
+	override def toString: String = s"name: $endPointName, amount: ${points.size}"
 }

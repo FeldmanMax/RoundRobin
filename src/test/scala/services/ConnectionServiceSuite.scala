@@ -1,9 +1,10 @@
 package services
 
 import cache.TimedCache
-import models.{Connection, ConnectionGeneralInfo, Weight, WeightRate}
+import models._
 import org.scalatest.{BeforeAndAfter, FunSuite}
 import utils.{ConfigurationServiceCreator, ConnectionCreator, ConnectionServiceCreator}
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class ConnectionServiceSuite extends FunSuite
@@ -25,7 +26,7 @@ class ConnectionServiceSuite extends FunSuite
 		val rounds: Int = 40000
 		val avg: Int = rounds / connection.endpoints.size
 
-		val connectionWeightList_1: String = connectionService.connectionWeightList(connection) mkString ""
+		val connectionWeightList_1: String = connectionService.simpleConnectionWeightList(connection) mkString ""
 
 		(0 until rounds).foreach { _ =>
 			connectionService.next(connection).right.foreach { endpoint =>
@@ -40,7 +41,7 @@ class ConnectionServiceSuite extends FunSuite
 			}
 		}
 
-		val connectionWeightList_2: String = connectionService.connectionWeightList(connection) mkString " "
+		val connectionWeightList_2: String = connectionService.simpleConnectionWeightList(connection) mkString " "
 
 		arrayBuffer.toList.indices.map { id =>
 			val count = arrayBuffer(id)
@@ -114,6 +115,46 @@ class ConnectionServiceSuite extends FunSuite
 			}
 		}
 		arrayBuffer.foreach(count => assert(isWithinRatio(20000, count, 0.3), s"Avg: 20000, Count:$count"))
+	}
+
+	test("connection of connection") {
+		val connectionService: ConnectionService = getConnectionService()
+		connectionService.next("connection_with_endpoints_A_B") match {
+			case Left(left) => assert(false, left)
+			case Right(response) =>
+				assert(response.parentConnectionName == "connection_with_endpoints_A_B")
+				assert(response.connectionName == "endpoints_A" || response.connectionName == "endpoints_B")
+		}
+	}
+
+	test("80000 request - equal distribution for connection of connections") {
+		val connectionService: ConnectionService = getConnectionService()
+		val rounds: Int = 80000
+		var arrayBuffer: List[ConnectionResponse] = List.empty
+
+		(0 until rounds).foreach { _ =>
+			connectionService.next("connection_with_endpoints_A_B").right.foreach { response =>
+				arrayBuffer = List(response) ::: arrayBuffer
+			}
+		}
+		arrayBuffer.groupBy(x=>x.endpointName).map { case (name, responses) =>
+			name -> responses.size
+		}.filterNot { case (_, count) =>
+			isWithinRatio(20000, count, 0.2)
+		}.foreach { case (name, count) => assert(false, s"$name $count") }
+	}
+
+	test("reduce endpoint") {
+		val connectionService: ConnectionService = getConnectionService()
+		(for {
+			response <- connectionService.next("connection_with_endpoints_A_B").right
+			weight <- connectionService.update(response.endpointName, WeightRate(isSuccess = false, isPercent = false, 10)).right
+		} yield weight) match {
+			case Left(left) => assert(false, left)
+			case Right(updatedWeight) =>
+				assert(updatedWeight.size == 90)
+				//connectionService.
+		}
 	}
 
 	private def isWithinRatio(avg: Int, amount: Int, delta: Double): Boolean = {

@@ -1,33 +1,41 @@
 [
   {
     "info": {
-      "name": "connection_1_test",
+      "name": "connection_with_endpoints_A_B",
       "isUsingConnections": true
     },
     "endpointsList": [
       {
-        "name": "endpoint_1",
-        "value": "value_1_1"
+        "name": "conn_A",
+        "value": "endpoints_A"
       },
       {
-        "name": "endpoint_2",
-        "value": "value_1_2"
+        "name": "conn_B",
+        "value": "endpoints_B"
       }
     ]
   },
   {
     "info": {
-      "name": "connection_2_test",
-      "isUsingConnections": true
+      "name": "connection_with_4_simple_endpoints"
+      "isUsingConnections": false
     },
     "endpointsList": [
       {
-        "name": "endpoint_1",
-        "value": "value_2_1"
+        "name": "endpoint_A",
+        "value": "value_A"
       },
       {
-        "name": "endpoint_2",
-        "value": "value_2_2"
+        "name": "endpoint_B",
+        "value": "value_B"
+      },
+      {
+        "name": "endpoint_C",
+        "value": "value_C"
+      },
+      {
+        "name": "endpoint_D",
+        "value": "value_D"
       }
     ]
   }

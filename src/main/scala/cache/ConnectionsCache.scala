@@ -47,6 +47,13 @@ class TimedCache[Key<:Object, Value<:Object](val concurrencyLevel:  Int=6,
     getWithError(key)
   }
 
+	@inline def getOrAdd(key: Key)(func: => Value): Either[String, Value] = {
+		val result = gCache.getIfPresent(key)
+		if(result == null)
+			put(key, func)
+		getWithError(key)
+	}
+
 	@inline def getAsyncWithDefault(key: Key, defaultValue: => Value): Future[Value] =
 		Future { getWithDefault(key, defaultValue) }
 

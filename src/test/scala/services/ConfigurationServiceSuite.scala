@@ -8,7 +8,7 @@ class ConfigurationServiceSuite extends FunSuite with ConfigurationServiceCreato
   test("load connection_1") {
     val service: ConfigurationService = configServiceWithFileConfiguration()
     val loadedConnection: Either[String, Connection] = for {
-      connection <- service.loadConnection("connection_1").right
+      connection <- service.loadConnection("endpoints_A").right
     } yield connection
 
     loadedConnection match {
@@ -21,7 +21,7 @@ class ConfigurationServiceSuite extends FunSuite with ConfigurationServiceCreato
   test("load connection_2") {
     val service: ConfigurationService = configServiceWithFileConfiguration()
     val loadedConnection: Either[String, Connection] = for {
-      connection <- service.loadConnection("connection_2").right
+      connection <- service.loadConnection("endpoints_B").right
     } yield connection
 
     loadedConnection match {
@@ -34,7 +34,7 @@ class ConfigurationServiceSuite extends FunSuite with ConfigurationServiceCreato
   test("load connection_3") {
     val service: ConfigurationService = configServiceWithFileConfiguration()
     val loadedConnection: Either[String, List[Connection]] = for {
-      connection <- service.loadConnections("connection_3").right
+      connection <- service.loadConnections("connection_with_endpoints_A_B").right
     } yield connection
 
     loadedConnection match {
