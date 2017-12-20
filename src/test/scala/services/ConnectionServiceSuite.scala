@@ -54,7 +54,7 @@ class ConnectionServiceSuite extends FunSuite
 	}
 
 	test("next endpoint - first will have twice as much") {
-		val cache = createCache(
+		val cache = createWeightCache(
 			Map("endpoint_a" -> Weight("endpoint_a", pointsService.getPoints(100)),
 				"endpoint_b" -> Weight("endpoint_b", pointsService.getPoints(50)))
 		)
@@ -76,21 +76,27 @@ class ConnectionServiceSuite extends FunSuite
 	}
 
 	test("next with single negative update") {
-		val cache = createCache(
+		val cache = createWeightCache(
 			Map("endpoint_a" -> Weight("endpoint_a", pointsService.getPoints(100)),
 					"endpoint_b" -> Weight("endpoint_b", pointsService.getPoints(50)))
 		)
+		val connection: Connection = getConnection(ConnectionGeneralInfo("name"), Map("endpoint_a" -> 100, "endpoint_b" -> 50))
+
 
 		val connectionService: ConnectionService = getConnectionService(Some(cache))
-		val connection: Connection = getConnection(ConnectionGeneralInfo("name"), Map("endpoint_a" -> 100, "endpoint_b" -> 50))
+
 		val weightRate: WeightRate = WeightRate(isSuccess = false, isPercent = false, 10)
-		connectionService.update(endpointName = "endpoint_a", weightRate).right.foreach { result =>
-			assert(connectionService.getWeight(connection) == 140)
+		connectionService.update(endpointName = "endpoint_a", weightRate) match {
+			case Left(left) => assert(false, left)
+			case Right(result) => connectionService.connectionWeight(connection.info.name) match {
+				case Left(left) => assert(false, left)
+				case Right(right) => assert(right.totalWeight == 140)
+			}
 		}
 	}
 
 	test("next with bad update params") {
-		val cache = createCache(
+		val cache = createWeightCache(
 			Map("endpoint_a" -> Weight("endpoint_a", pointsService.getPoints(100)),
 					"endpoint_b" -> Weight("endpoint_b", pointsService.getPoints(50)))
 		)
@@ -98,7 +104,10 @@ class ConnectionServiceSuite extends FunSuite
 		val connection: Connection = getConnection(ConnectionGeneralInfo("name"), Map("endpoint_a" -> 100, "endpoint_b" -> 50))
 		val weightRate: WeightRate = WeightRate(isSuccess = false, isPercent = false, 1000)
 		connectionService.update(endpointName = "endpoint_a", weightRate).right.foreach { result =>
-			assert(connectionService.getWeight(connection) == 51)
+			connectionService.connectionWeight(connection.info.name) match {
+				case Left(left) => assert(false, left)
+				case Right(right) => assert(right.totalWeight == 140)
+			}
 		}
 	}
 
@@ -169,7 +178,7 @@ class ConnectionServiceSuite extends FunSuite
 		amount > min && amount < max
 	}
 
-	private def createCache(nameToWeight: Map[String, Weight]): TimedCache[String, Weight] = {
+	private def createWeightCache(nameToWeight: Map[String, Weight]): TimedCache[String, Weight] = {
 		val cache = TimedCache.apply[String, Weight]()
 		nameToWeight.foreach { case (name, weight) => cache.put(name, weight)}
 		cache

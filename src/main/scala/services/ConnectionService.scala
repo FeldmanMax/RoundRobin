@@ -52,7 +52,10 @@ class ConnectionService(val weightService: WeightService,
 		}
 	}
 
-  def update(endpointName: String, weightRate: WeightRate): Either[String, Weight] = weightService.updateWeight(endpointName, weightRate)
+  def update(endpointName: String, weightRate: WeightRate): Either[String, Weight] = {
+    val result = weightService.updateWeight(endpointName, weightRate)
+    result
+  }
 
   def connectionWeight(name: String): Either[String, ConnectionWeight] = {
     getConnection(name).right.flatMap { connection =>

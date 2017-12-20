@@ -1,6 +1,6 @@
 package services
 
-import models.{Connection, ConnectionGeneralInfo, WeightRate}
+import models.{Connection, ConnectionGeneralInfo, ConnectionWeight, WeightRate}
 import org.joda.time.DateTime
 import org.scalatest.{BeforeAndAfter, FunSuite}
 import repositories.{ConnectionRepository, WeightRepository}
@@ -35,7 +35,12 @@ class ConnectionServiceAsyncroniousSuite extends FunSuite
   private def getWeightReadFuture(rounds: Int, connection: Connection, connectionService: ConnectionService): Future[List[(DateTime, String)]] = {
     Future {
       (0 until rounds).map { _ =>
-        DateTime.now() -> s"Thread: ${Thread.currentThread().getName} totalWeight: ${connectionService.getWeight(connection)}"
+        val connectionWeight: String = connectionService.connectionWeight(connection.info.name) match {
+          case Left(left) => left
+          case Right(right) => right.totalWeight + ""
+        }
+
+        DateTime.now() -> s"Thread: ${Thread.currentThread().getName} totalWeight: $connectionWeight"
       }.toList
     }
   }

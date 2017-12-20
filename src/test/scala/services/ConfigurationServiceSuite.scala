@@ -33,13 +33,13 @@ class ConfigurationServiceSuite extends FunSuite with ConfigurationServiceCreato
 
   test("load connection_3") {
     val service: ConfigurationService = configServiceWithFileConfiguration()
-    val loadedConnection: Either[String, List[Connection]] = for {
-      connection <- service.loadConnections("connection_with_endpoints_A_B").right
+    val loadedConnection: Either[String, Connection] = for {
+      connection <- service.loadConnection("connection_with_endpoints_A_B").right
     } yield connection
 
     loadedConnection match {
       case Left(left) => assert(false, left)
-      case Right(conn) => assert(conn.size == 2)
+      case Right(conn) => assert(conn.endpointsList.size == 2)
     }
   }
 }

@@ -1,7 +1,8 @@
 [
   {
     "info": {
-      "name": "endpoints_A"
+      "name": "endpoints_A",
+      "isUsingConnections": true
     },
     "endpointsList": [
       {
