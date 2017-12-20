@@ -26,7 +26,7 @@ class ConnectionServiceSuite extends FunSuite
 		val rounds: Int = 40000
 		val avg: Int = rounds / connection.endpoints.size
 
-		val connectionWeightList_1: String = connectionService.simpleConnectionWeightList(connection) mkString ""
+		val connectionWeightList_1: String = connectionService.weightService.getConnectionWeight(connection) mkString ""
 
 		(0 until rounds).foreach { _ =>
 			connectionService.next(connection).right.foreach { endpoint =>
@@ -41,7 +41,7 @@ class ConnectionServiceSuite extends FunSuite
 			}
 		}
 
-		val connectionWeightList_2: String = connectionService.simpleConnectionWeightList(connection) mkString " "
+		val connectionWeightList_2: String = connectionService.weightService.getConnectionWeight(connection) mkString " "
 
 		arrayBuffer.toList.indices.map { id =>
 			val count = arrayBuffer(id)
@@ -153,7 +153,13 @@ class ConnectionServiceSuite extends FunSuite
 			case Left(left) => assert(false, left)
 			case Right(updatedWeight) =>
 				assert(updatedWeight.size == 90)
-				//connectionService.
+				connectionService.getConnection("connection_with_endpoints_A_B") match {
+					case Left(left) => assert(false, left)
+					case Right(connection) => connectionService.connectionWeight(connection.info.name) match {
+						case Left(left) => assert(false, left)
+						case Right(connectionWeight) => assert(connectionWeight.totalWeight == 190)
+					}
+				}
 		}
 	}
 

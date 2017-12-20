@@ -2,6 +2,7 @@ package services
 
 import models._
 import repositories.ConnectionRepository
+import utils.Implicits.ListExtension
 
 class ConnectionService(val weightService: WeightService,
                         val connectionRepository: ConnectionRepository,
@@ -43,7 +44,7 @@ class ConnectionService(val weightService: WeightService,
   }
 
 	def next(connection: Connection): Either[String, ConnectionResponse] = {
-    val weightsList: List[Weight] = simpleConnectionWeightList(connection)
+    val weightsList: List[Weight] = weightService.getConnectionWeight(connection)
 		val nextResult: Weight = weightService.next(weightsList)
 		connection.endpoints.get(nextResult.endPointName) match {
 			case None => Left(s"Endpoint ${nextResult.endPointName} was not found on the connection")
@@ -53,24 +54,32 @@ class ConnectionService(val weightService: WeightService,
 
   def update(endpointName: String, weightRate: WeightRate): Either[String, Weight] = weightService.updateWeight(endpointName, weightRate)
 
-  def getWeight(connection: Connection): Int = {
-    connection.endpoints.map { case(_, endpoint) =>
-      weightService.getOrDefault(endpoint.name) match {
-        case Left(_)      => 100
-        case Right(right) => right.size
-      }
-    }.sum
-  }
-
-  def simpleConnectionWeightList(connection: Connection): List[Weight] = {
-    connection.endpointNames.map { endpointName =>
-      weightService.getOrDefault(endpointName, Option(weightService.create(endpointName)))
-    }.filter(x=>x.isRight).map(x=>x.right.get)
-  }
-
   def connectionWeight(name: String): Either[String, ConnectionWeight] = {
-    getConnection(name).right.flatMap {
+    getConnection(name).right.flatMap { connection =>
+      getConnectionActiveEndpoints(connection)
+    }.right.flatMap { endpoints =>
+      val totalWeight = endpoints.map(x=>x.size).sum
+      val endpointToWeight = endpoints.map(x=>x.endPointName -> x).toMap
+      Right(ConnectionWeight(totalWeight, endpointToWeight))
+    }
+  }
 
+  private def getConnectionActiveEndpoints(connection: Connection): Either[String, List[Weight]] = {
+    if(!connection.info.isUsingConnections) Right(weightService.getConnectionWeight(connection))
+    else  {
+      val endpointsResult: List[Either[String, Either[String, List[Weight]]]] =
+      connection.endpointsList.map { endpoint =>
+        connectionRepository.get(endpoint.value).right.flatMap { childConn =>
+          Right(getConnectionActiveEndpoints(childConn))
+        }
+      }
+
+      if(endpointsResult.exists(x=>x.isLeft)) Left(endpointsResult.eitherMessage())
+      else  {
+        val weightsEither: List[Either[String, List[Weight]]] = endpointsResult.map(x=>x.right.get)
+        if(weightsEither.exists(x=>x.isLeft)) Left(weightsEither.eitherMessage())
+        else                                  Right(weightsEither.flatten(x=>x.right.get))
+      }
     }
   }
 

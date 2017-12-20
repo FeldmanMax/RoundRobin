@@ -33,4 +33,10 @@ object Implicits {
 			}
 		}
 	}
+
+	implicit class ListExtension[T](list: List[Either[String, T]]) {
+		def eitherMessage(): String = {
+			list.filter(x=>x.isLeft).map(x=>x.left.get) mkString "\n"
+		}
+	}
 }
