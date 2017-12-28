@@ -181,6 +181,15 @@ class ConnectionServiceSuite extends FunSuite
 		}
 	}
 
+	test("reduce google to 50 and -> 'search_engines' total weight has to be 150") {
+		val connectionService: ConnectionService = getConnectionService()
+		(0 until 5).foreach { _ => connectionService.update("google_com", WeightRate(isSuccess = false, isPercent = false, quantity = 10)) }
+		connectionService.connectionWeight("search_engines") match {
+			case Left(left) => assert(false, left)
+			case Right(result) => assert(result.totalWeight == 250)
+		}
+	}
+
 	private def isWithinRatio(avg: Int, amount: Int, delta: Double): Boolean = {
 		val min: Int = (avg * (1 - delta)).toInt
 		val max: Int = (avg * (1 + delta)).toInt
