@@ -1,11 +1,11 @@
 package cache
 
-import models.{Connection, Weight}
+import models.{Connection, EndpointWeight}
 
 object ConnectionsCache {
   import scala.concurrent.ExecutionContext.Implicits._
 	private val connectionsCache: TimedCache[String, Connection] = TimedCache.apply[String, Connection]()
-  private val weightsCache: TimedCache[String, Weight] = TimedCache.apply[String, Weight]()
+  private val weightsCache: TimedCache[String, EndpointWeight] = TimedCache.apply[String, EndpointWeight]()
   def connectionCache = connectionsCache
   def weightCache = weightsCache
 }
@@ -54,12 +54,27 @@ class TimedCache[Key<:Object, Value<:Object](val concurrencyLevel:  Int=6,
 		getWithError(key)
 	}
 
+	@inline def getAll(): Either[String, List[Value]] = {
+		val list: List[Either[String, Value]] = getAllKeys().map(getWithError)
+		if(list.exists(x=>x.isLeft))  Left(list.filter(x=>x.isLeft).map(x=>x.left.get) mkString "\\n")
+		else                          Right(list.map(x=>x.right.get))
+	}
+
 	@inline def getAsyncWithDefault(key: Key, defaultValue: => Value): Future[Value] =
 		Future { getWithDefault(key, defaultValue) }
 
 	@inline def put(key: Key, value: Value): Unit = gCache.put(key, value)
 
 	@inline def putAsync(key: Key, value: => Value): Future[Unit] = Future { gCache.put(key, value) }
+
+	private def getAllKeys(): List[Key] = {
+		import java.util
+		def getAllKeyImpl(iterator: util.Iterator[Key]): List[Key] = {
+			if(!iterator.hasNext) List.empty
+			else                  iterator.next() :: getAllKeyImpl(iterator)
+		}
+		getAllKeyImpl(gCache.asMap().keySet().iterator())
+	}
 }
 
 object TimedCache {

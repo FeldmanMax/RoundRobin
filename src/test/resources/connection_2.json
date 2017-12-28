@@ -1,17 +1,25 @@
 [
   {
     "info": {
-      "name": "endpoints_B",
-      "isUsingConnections": true
+      "name": "connection_with_4_simple_endpoints",
+      "isUsingConnections": false
     },
     "endpointsList": [
       {
-        "name": "endpoint_b_1",
-        "value": "value_b_1"
+        "name": "endpoint_A",
+        "value": "value_A"
       },
       {
-        "name": "endpoint_b_2",
-        "value": "value_b_2"
+        "name": "endpoint_B",
+        "value": "value_B"
+      },
+      {
+        "name": "endpoint_C",
+        "value": "value_C"
+      },
+      {
+        "name": "endpoint_D",
+        "value": "value_D"
       }
     ]
   }

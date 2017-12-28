@@ -1,6 +1,6 @@
 package services
 
-import models.{Weight, Point}
+import models.{EndpointWeight, Point}
 import org.scalatest.{BeforeAndAfter, FunSuite}
 import utils.{WeightCreator, PointsCreator}
 
@@ -19,7 +19,7 @@ class PointsServiceSuite extends FunSuite with BeforeAndAfter with PointsCreator
 	}
 
 	test("2. min of 2 points") {
-		val group: Weight = Weight("name", getPoints(2))
+		val group: EndpointWeight = EndpointWeight("name", getPoints(2))
 		val minDistnace: Double = group - testPoint
 		val expected: Double = group.points.sortBy(point=>point.x).last - testPoint
 		assert(minDistnace - expected == 0.0)
@@ -29,8 +29,8 @@ class PointsServiceSuite extends FunSuite with BeforeAndAfter with PointsCreator
 		val groupAPoints: List[Point] = getPointsWithMaxX(0.34, 10)
 		val groupBPoints: List[Point] = getPointsWithMaxX(0.35, 10)
 
-		val groupA: Weight = getWeight(groupAPoints, "groupA", 0)
-		val groupB: Weight = getWeight(groupBPoints, "groupB", 0)
+		val groupA: EndpointWeight = getWeight(groupAPoints, "groupA", 0)
+		val groupB: EndpointWeight = getWeight(groupBPoints, "groupB", 0)
 		assert((groupA - testPoint) > (groupB - testPoint))
 	}
 
