@@ -1,0 +1,26 @@
+[
+  {
+    "info": {
+      "name": "connection_with_4_simple_endpoints",
+      "isUsingConnections": false
+    },
+    "endpointsList": [
+      {
+        "name": "endpoint_A",
+        "value": "value_A"
+      },
+      {
+        "name": "endpoint_B",
+        "value": "value_B"
+      },
+      {
+        "name": "endpoint_C",
+        "value": "value_C"
+      },
+      {
+        "name": "endpoint_D",
+        "value": "value_D"
+      }
+    ]
+  }
+]
