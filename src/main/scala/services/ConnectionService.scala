@@ -1,6 +1,8 @@
 package services
 
+import logging.Logger
 import models._
+import org.slf4j.event.Level
 import repositories.ConnectionRepository
 import utils.Implicits.ListExtension
 
@@ -33,6 +35,7 @@ class ConnectionService(val weightService: WeightService,
   }
 
   def next(connectionName: String): Either[String, ConnectionResponse] = {
+    Logger.info(s"${this.getClass} -> next")
     connectionRepository.get(connectionName) match {
       case Left(_) =>           load(connectionName).right.flatMap { connection => nextConnection(connection) }
       case Right(connection) => nextConnection(connection)
@@ -41,6 +44,7 @@ class ConnectionService(val weightService: WeightService,
 
   def update(endpointName: String, weightRate: WeightRate): Either[String, EndpointWeight] = {
     val result = weightService.updateWeight(endpointName, weightRate)
+    Logger.info(s"${result.toString}")
     result
   }
 
