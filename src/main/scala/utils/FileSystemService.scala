@@ -1,9 +1,7 @@
 package utils
 
 import java.io.{Closeable, File}
-
 import utils.Implicits.CloseableExtension
-
 import scala.io.BufferedSource
 
 class FileSystemService {
@@ -20,5 +18,24 @@ class FileSystemService {
     catch {
       case ex: Exception => Left(ex.getMessage)
     }
+  }
+
+  def deleteFile(path: String): Either[String, Boolean] = {
+    try{
+      Right(new File(path).delete())
+    }
+    catch {
+      case ex: SecurityException => Left(ex.getMessage)
+    }
+  }
+
+  def createFile(name: String): Either[String, File] = {
+    try {
+      Right(new File(name))
+    }
+    catch {
+      case ex: Exception => Left(ex.getMessage)
+    }
+
   }
 }

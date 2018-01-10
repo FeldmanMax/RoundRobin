@@ -1,6 +1,8 @@
 package repositories
 
+import logging.Logger
 import models.Connection
+import org.slf4j.event.Level
 import utils.Serialization.JsonSerialization
 import utils.{AppConfiguration, FileSystemService}
 
@@ -17,6 +19,7 @@ class FileConfigurationRepository(val fileService: FileSystemService) extends Co
   }
 
   def loadConnection(name: String): Either[String, Connection] = {
+    Logger.log(Level.INFO, s"${this.getClass} -> loading connection")
     fileService.filesByExtension(configurationLocation, ".json").right.flatMap { files =>
       val results: List[Either[String, List[Connection]]] = files.map { fileName =>
         fileService.loadFile(s"$configurationLocation$fileName").right.flatMap { data =>
@@ -40,6 +43,7 @@ class FileConfigurationRepository(val fileService: FileSystemService) extends Co
   }
 
   def loadConnections(destination: String): Either[String, List[Connection]] = {
+    Logger.log(Level.INFO, s"${this.getClass} -> loading connections")
     fileService.loadFile(s"$configurationLocation$destination.json").right.flatMap { data =>
       Right(JsonSerialization.deserialize[List[Connection]](data))
     }

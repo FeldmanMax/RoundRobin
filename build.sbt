@@ -12,8 +12,12 @@ libraryDependencies ++= Seq(
   "org.scalaj" %% "scalaj-http" % "2.3.0",
   "io.spray" %%  "spray-json" % "1.3.3",
   "com.typesafe.scala-logging" %% "scala-logging" % "3.5.0",
-  "ch.qos.logback" % "logback-classic" % "1.1.7",
   "joda-time" % "joda-time" % "2.9.7",
   "com.github.cb372" %% "scalacache-guava" % "0.10.0",
   "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.8.8",
-  "org.slf4j" % "slf4j-log4j12" % "1.5.6")
+  "org.slf4j" % "slf4j-log4j12" % "1.7.25" % Test,
+  "biz.enef" %% "slogging-slf4j" % "0.5.2",
+  "biz.enef" %% "slogging" % "0.6.0",
+  "com.criteo.lolhttp" %% "lolhttp" % "0.9.1")
+
+lazy val root = project.enablePlugins(ScalaJSPlugin)
