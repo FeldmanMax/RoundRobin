@@ -49,7 +49,7 @@ class MockedLogger extends LoggerBase {
 class Logger(val loggers: List[LoggerBase]) extends LoggerBase {
 
   override def log[T <: AnyRef](level: Level, data: T): Unit = {
-    loggers.foreach { logger => logger.log(level, data) }
+    log(level, data.toString)
   }
 
   override def log(level: Level, data: String): Unit = {
@@ -70,6 +70,19 @@ object LoggerFactory {
 
 object Logger {
   private val logger: Logger = LoggerFactory.get
-  def log[T <: AnyRef](level: Level, data: T): Unit = logger.log(level, data)
-  def log(level: Level, data: String): Unit = logger.log(level, data)
+
+  def info[T <: AnyRef](data: T): Unit = logger.log(Level.INFO, data)
+  def info(data: String): Unit = logger.log(Level.INFO, data)
+
+  def debug[T <: AnyRef](data: T): Unit = logger.log(Level.DEBUG, data)
+  def debug(data: String): Unit = logger.log(Level.DEBUG, data)
+
+  def error[T <: AnyRef](data: T): Unit = logger.log(Level.ERROR, data)
+  def error(data: String): Unit = logger.log(Level.ERROR, data)
+
+  def warn[T <: AnyRef](data: T): Unit = logger.log(Level.WARN, data)
+  def warn(data: String): Unit = logger.log(Level.WARN, data)
+
+  def trace[T <: AnyRef](data: T): Unit = logger.log(Level.TRACE, data)
+  def trace(data: String): Unit = logger.log(Level.TRACE, data)
 }

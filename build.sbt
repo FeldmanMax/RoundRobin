@@ -16,8 +16,4 @@ libraryDependencies ++= Seq(
   "com.github.cb372" %% "scalacache-guava" % "0.10.0",
   "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.8.8",
   "org.slf4j" % "slf4j-log4j12" % "1.7.25" % Test,
-  "biz.enef" %% "slogging-slf4j" % "0.5.2",
-  "biz.enef" %% "slogging" % "0.6.0",
   "com.criteo.lolhttp" %% "lolhttp" % "0.9.1")
-
-lazy val root = project.enablePlugins(ScalaJSPlugin)
