@@ -1,11 +1,14 @@
 package services
 
-import models.{Connection, Point, EndpointWeight, WeightRate}
+import javax.inject.Named
+
+import com.google.inject.Inject
+import models.{Connection, EndpointWeight, Point, WeightRate}
 import repositories.WeightRepository
 import utils.{Consts, PointsCalculator}
 
-class WeightService(val pointsService: PointsService,
-										val weightRepository: WeightRepository){
+class WeightService @Inject() (@Named("points_service") 		val pointsService: PointsService,
+															 @Named("weight_repository") 	val weightRepository: WeightRepository){
 
 	def create(name: String): EndpointWeight = EndpointWeight(name, pointsService.getPoints(Consts.POINTS_MAX_AMOUNT))
 	def updateWeight(weight: EndpointWeight, weightRate: WeightRate): Either[String, EndpointWeight] = {

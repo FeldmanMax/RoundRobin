@@ -1,14 +1,15 @@
 package services
 
+import com.google.inject.Inject
+import com.google.inject.name.Named
 import logging.Logger
 import models._
-import org.slf4j.event.Level
 import repositories.ConnectionRepository
 import utils.Implicits.ListExtension
 
-class ConnectionService(val weightService: WeightService,
-                        val connectionRepository: ConnectionRepository,
-                        val configurationService: ConfigurationService) {
+class ConnectionService @Inject() ( @Named("weight_service")        val weightService: WeightService,
+                                    @Named("connection_repository") val connectionRepository: ConnectionRepository,
+                                    @Named("config_service")        val configurationService: ConfigurationService) {
 
 	def load(connectionName: String): Either[String, Connection] = {
 		configurationService.loadConnection(connectionName).right.flatMap { connection =>

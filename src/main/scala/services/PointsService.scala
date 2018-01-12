@@ -1,9 +1,10 @@
 package services
 
+import com.google.inject.Inject
 import models.Point
 import utils.{Consts, PointGenerator}
 
-class PointsService (){
+class PointsService @Inject()(){
 
 	def getPoint: Point = PointGenerator.next()
 	def getPoints(quantity: Int): List[Point] = {
