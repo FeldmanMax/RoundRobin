@@ -22,4 +22,6 @@ object AppConfiguration {
       case _: Exception => List(DoNotLog)
     }
   }
+
+  def connectionsLocation: String = config.getString("connectionsLocation")
 }

@@ -2,8 +2,8 @@ package models
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
-case class Connection(@JsonProperty("info") 					info: 					ConnectionGeneralInfo,
-											@JsonProperty("endpointsList") 	endpointsList: 	List[ConnectionEndpoint]) {
+final case class Connection(@JsonProperty("info") 					info: 					ConnectionGeneralInfo,
+														@JsonProperty("endpointsList") 	endpointsList: 	List[ConnectionEndpoint]) {
 	def key: String = info.name
 	lazy val endpoints: Map[String, ConnectionEndpoint] = endpointsList.map(x=>x.name -> x).toMap
 	lazy val endpointNames: List[String] = endpoints.keys.toList

@@ -6,6 +6,7 @@ import org.scalatest.{BeforeAndAfter, FunSuite}
 import utils.{ConfigurationServiceCreator, ConnectionCreator, ConnectionServiceCreator}
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.util.{Failure, Success}
 
 class ConnectionServiceSuite extends FunSuite
 	with BeforeAndAfter
@@ -15,12 +16,8 @@ class ConnectionServiceSuite extends FunSuite
 
 	test("next endpoint - equal distribution") {
 		val endpointPrefix: String = "endpoint"
-		val endpoint_a = s"${endpointPrefix}_a"
-		val endpoint_b = s"${endpointPrefix}_b"
-		val endpoint_c = s"${endpointPrefix}_c"
-		val endpoint_d = s"${endpointPrefix}_d"
-
-		val connection: Connection = getConnection(ConnectionGeneralInfo("name"), Map(endpoint_a -> 100, endpoint_b -> 100, endpoint_c -> 100, endpoint_d -> 100))
+		val endpointMap: Map[String, Int] = List(s"${endpointPrefix}_a", s"${endpointPrefix}_b", s"${endpointPrefix}_c", s"${endpointPrefix}_d").map(x=> x -> 100).toMap
+		val connection: Connection = getConnection(ConnectionGeneralInfo("name"), endpointMap)
 		val connectionCache = createConnectionCache(Map(connection.info.name -> connection))
 		val connectionService: ConnectionService = getConnectionService(None, Some(connectionCache))
 
@@ -92,9 +89,9 @@ class ConnectionServiceSuite extends FunSuite
 
 		val weightRate: WeightRate = WeightRate(isSuccess = false, isPercent = false, 10)
 		connectionService.update(endpointName = "endpoint_a", weightRate) match {
-			case Left(left) => assert(false, left)
-			case Right(result) => connectionService.connectionWeight(connection.info.name) match {
-				case Left(left) => assert(false, left)
+			case Left(left) => fail(left)
+			case Right(_) => connectionService.connectionWeight(connection.info.name) match {
+				case Left(left) => fail(left)
 				case Right(right) => assert(right.totalWeight == 140)
 			}
 		}
@@ -110,9 +107,9 @@ class ConnectionServiceSuite extends FunSuite
 		val connectionService: ConnectionService = getConnectionService(Some(weightCache), Some(connectionCache))
 
 		val weightRate: WeightRate = WeightRate(isSuccess = false, isPercent = false, 1000)
-		connectionService.update(endpointName = "endpoint_a", weightRate).right.foreach { result =>
+		connectionService.update(endpointName = "endpoint_a", weightRate).right.foreach { _ =>
 			connectionService.connectionWeight(connection.info.name) match {
-				case Left(left) => assert(false, left)
+				case Left(left) => fail(left)
 				case Right(right) => assert(right.totalWeight == 51)
 			}
 		}
@@ -138,7 +135,7 @@ class ConnectionServiceSuite extends FunSuite
 	test("connection of connection") {
 		val connectionService: ConnectionService = getConnectionService()
 		connectionService.next("search_engines") match {
-			case Left(left) => assert(false, left)
+			case Left(left) => fail(left)
 			case Right(response) =>
 				assert(response.parentConnectionName == "search_engines")
 				assert(response.connectionName == "search_google" || response.connectionName == "search_bing")
@@ -159,7 +156,7 @@ class ConnectionServiceSuite extends FunSuite
 			name -> responses.size
 		}.filterNot { case (_, count) =>
 			isWithinRatio(20000, count, 0.2)
-		}.foreach { case (name, count) => assert(false, s"$name $count") }
+		}.foreach { case (name, count) => fail(s"$name $count") }
 	}
 
 	test("reduce endpoint") {
@@ -168,13 +165,13 @@ class ConnectionServiceSuite extends FunSuite
 			response <- connectionService.next("search_engines").right
 			weight <- connectionService.update(response.endpointName, WeightRate(isSuccess = false, isPercent = false, 10)).right
 		} yield weight) match {
-			case Left(left) => assert(false, left)
+			case Left(left) => fail(left)
 			case Right(updatedWeight) =>
 				assert(updatedWeight.size == 90)
 				connectionService.getConnection("search_engines") match {
-					case Left(left) => assert(false, left)
+					case Left(left) => fail(left)
 					case Right(connection) => connectionService.connectionWeight(connection.info.name) match {
-						case Left(left) => assert(false, left)
+						case Left(left) => fail(left)
 						case Right(connectionWeight) => assert(connectionWeight.totalWeight == 290)
 					}
 				}
@@ -185,9 +182,58 @@ class ConnectionServiceSuite extends FunSuite
 		val connectionService: ConnectionService = getConnectionService()
 		(0 until 5).foreach { _ => connectionService.update("google_com", WeightRate(isSuccess = false, isPercent = false, quantity = 10)) }
 		connectionService.connectionWeight("search_engines") match {
-			case Left(left) => assert(false, left)
+			case Left(left) => fail(left)
 			case Right(result) => assert(result.totalWeight == 250)
 		}
+	}
+
+	test("connection with 4 simple points async next 40000 times equal distribution") {
+		val connectionService: ConnectionService = getConnectionService()
+		val arrayBuffer: Array[Int] = new Array[Int](4)
+		val rounds: Int = 40000
+		val avg: Int = rounds / arrayBuffer.length
+		(0 until 40000).foreach { _ =>
+			connectionService.nextAsync("connection_with_4_simple_endpoints").onComplete {
+				case Success(result) => result match {
+					case Left(left) => fail(left)
+					case Right(res) =>
+						val index = res.endpointName.toLowerCase match {
+							case "endpoint_a" => 0
+							case "endpoint_b" => 1
+							case "endpoint_c" => 2
+							case "endpoint_d" => 3
+						}
+						arrayBuffer.update(index, arrayBuffer(index)+1)
+				}
+				case Failure(failureMessage) => fail(failureMessage.getMessage)
+			}
+		}
+
+		Thread.sleep(10000)
+		arrayBuffer.toList.indices.map { id =>
+			val count = arrayBuffer(id)
+			assert(isWithinRatio(avg, count, 0.3),
+				s"Avg: $avg, \n" + s"${arrayBuffer.toList.indices.map(x=>x -> arrayBuffer(x)).toMap}")
+		}
+	}
+
+	test("connection with 4 simple endpoints when updating the first endpoint in an async way") {
+		val connectionService: ConnectionService = getConnectionService()
+		val connection: Connection = connectionService.getConnection("connection_with_4_simple_endpoints").right.get
+		val endpoint: String = connection.endpointNames.head
+		connectionService.updateAsync(endpoint, WeightRate(isPercent = false, isSuccess = false, quantity = 10)).onComplete {
+			case Success(_) => connectionService.connectionWeight("connection_with_4_simple_endpoints") match {
+				case Left(left) => fail(left)
+				case Right(result) => assert(result.totalWeight == 390)
+			}
+			case Failure(f) => fail(f.getMessage)
+		}
+		connectionService.connectionWeight("connection_with_4_simple_endpoints") match {
+			case Left(left) => fail(left)
+			case Right(result) => assert(result.totalWeight == 400 || result.totalWeight == 390)
+		}
+
+		Thread.sleep(2000)
 	}
 
 	private def isWithinRatio(avg: Int, amount: Int, delta: Double): Boolean = {

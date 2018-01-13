@@ -16,4 +16,5 @@ libraryDependencies ++= Seq(
   "com.github.cb372" %% "scalacache-guava" % "0.10.0",
   "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.8.8",
   "org.slf4j" % "slf4j-log4j12" % "1.7.25" % Test,
-  "com.criteo.lolhttp" %% "lolhttp" % "0.9.1")
+  "com.criteo.lolhttp" %% "lolhttp" % "0.9.1",
+  "net.codingwell" %% "scala-guice" % "4.1.1")

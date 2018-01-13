@@ -1,14 +1,18 @@
 package services
 
+import com.google.inject.Inject
+import com.google.inject.name.Named
 import logging.Logger
 import models._
-import org.slf4j.event.Level
 import repositories.ConnectionRepository
+import utils.ImplicitExecutionContext
 import utils.Implicits.ListExtension
 
-class ConnectionService(val weightService: WeightService,
-                        val connectionRepository: ConnectionRepository,
-                        val configurationService: ConfigurationService) {
+import scala.concurrent.Future
+
+class ConnectionService @Inject() ( @Named("weight_service")        val weightService: WeightService,
+                                    @Named("connection_repository") val connectionRepository: ConnectionRepository,
+                                    @Named("config_service")        val configurationService: ConfigurationService) {
 
 	def load(connectionName: String): Either[String, Connection] = {
 		configurationService.loadConnection(connectionName).right.flatMap { connection =>
@@ -46,6 +50,14 @@ class ConnectionService(val weightService: WeightService,
     val result = weightService.updateWeight(endpointName, weightRate)
     Logger.info(s"${result.toString}")
     result
+  }
+
+  def nextAsync(connectionName: String): Future[Either[String, ConnectionResponse]] = {
+    Future { next(connectionName) }(ImplicitExecutionContext.RoundRobinExecutionContext)
+  }
+
+  def updateAsync(endpointName: String, weightRate: WeightRate): Future[Either[String, EndpointWeight]] = {
+    Future { update(endpointName, weightRate) }(ImplicitExecutionContext.RoundRobinExecutionContext)
   }
 
   def connectionWeight(name: String): Either[String, ConnectionWeight] = {
