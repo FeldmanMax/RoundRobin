@@ -13,10 +13,7 @@ trait ConfigurationRepository {
 
 class FileConfigurationRepository(val fileService: FileSystemService) extends ConfigurationRepository {
 
-  private val configurationLocation: String = {
-    val path: String = new java.io.File(".").getCanonicalPath
-    path + "/src/" + (if(AppConfiguration.isTest) "test" else "main") + "/resources/"
-  }
+  private val configurationLocation: String = new java.io.File(".").getCanonicalPath + AppConfiguration.connectionsLocation
 
   def loadConnection(name: String): Either[String, Connection] = {
     Logger.info(s"${this.getClass} -> loading connection")
