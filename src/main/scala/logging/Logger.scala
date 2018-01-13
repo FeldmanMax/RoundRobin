@@ -15,7 +15,7 @@ class ThreadLogger extends FileLogger {
   }
 
   override def log(level: Level, data: String): Unit = {
-    super.log(level, "Thread #" + Thread.currentThread().getId() + " -> " + data)
+    super.log(level, "Thread #" + Thread.currentThread().getId + " -> " + data)
   }
 }
 

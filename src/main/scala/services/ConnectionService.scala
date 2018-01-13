@@ -5,7 +5,10 @@ import com.google.inject.name.Named
 import logging.Logger
 import models._
 import repositories.ConnectionRepository
+import utils.ImplicitExecutionContext
 import utils.Implicits.ListExtension
+
+import scala.concurrent.Future
 
 class ConnectionService @Inject() ( @Named("weight_service")        val weightService: WeightService,
                                     @Named("connection_repository") val connectionRepository: ConnectionRepository,
@@ -47,6 +50,14 @@ class ConnectionService @Inject() ( @Named("weight_service")        val weightSe
     val result = weightService.updateWeight(endpointName, weightRate)
     Logger.info(s"${result.toString}")
     result
+  }
+
+  def nextAsync(connectionName: String): Future[Either[String, ConnectionResponse]] = {
+    Future { next(connectionName) }(ImplicitExecutionContext.RoundRobinExecutionContext)
+  }
+
+  def updateAsync(endpointName: String, weightRate: WeightRate): Future[Either[String, EndpointWeight]] = {
+    Future { update(endpointName, weightRate) }(ImplicitExecutionContext.RoundRobinExecutionContext)
   }
 
   def connectionWeight(name: String): Either[String, ConnectionWeight] = {
