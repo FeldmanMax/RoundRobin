@@ -2,7 +2,6 @@ package repositories
 
 import logging.Logger
 import models.Connection
-import org.slf4j.event.Level
 import utils.Serialization.JsonSerialization
 import utils.{AppConfiguration, FileSystemService}
 
