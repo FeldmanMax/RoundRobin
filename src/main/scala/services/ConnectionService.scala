@@ -2,7 +2,7 @@ package services
 
 import com.google.inject.Inject
 import com.google.inject.name.Named
-import logging.Logger
+import logging.ApplicationLogger
 import models._
 import repositories.ConnectionRepository
 import utils.ImplicitExecutionContext
@@ -39,7 +39,7 @@ class ConnectionService @Inject() ( @Named("weight_service")        val weightSe
   }
 
   def next(connectionName: String): Either[String, ConnectionResponse] = {
-    Logger.info(s"${this.getClass} -> next")
+    ApplicationLogger.info(s"${this.getClass} -> next")
     connectionRepository.get(connectionName) match {
       case Left(_) =>           load(connectionName).right.flatMap { connection => nextConnection(connection) }
       case Right(connection) => nextConnection(connection)
@@ -48,7 +48,7 @@ class ConnectionService @Inject() ( @Named("weight_service")        val weightSe
 
   def update(endpointName: String, weightRate: WeightRate): Either[String, EndpointWeight] = {
     val result = weightService.updateWeight(endpointName, weightRate)
-    Logger.info(s"${result.toString}")
+    ApplicationLogger.info(s"${result.toString}")
     result
   }
 
