@@ -1,7 +1,8 @@
 package logging
 
-import org.slf4j
 import org.slf4j.event.Level
+import com.typesafe.scalalogging.Logger
+import org.slf4j.LoggerFactory
 import utils.AppConfiguration
 
 trait LoggerBase {
@@ -9,26 +10,19 @@ trait LoggerBase {
   def log(level: Level, data: String)
 }
 
-class ThreadLogger extends FileLogger {
-  override def log[T <: AnyRef](level: Level, data: T): Unit = {
-    log(level, data.toString)
-  }
-
-  override def log(level: Level, data: String): Unit = {
-    super.log(level, "Thread #" + Thread.currentThread().getId + " -> " + data)
-  }
-}
-
 class FileLogger extends LoggerBase {
-  override def log[T <: AnyRef](level: Level, data: T): Unit = {
-    logImpl(level, data.toString, slf4j.LoggerFactory.getLogger(level.toString.toLowerCase))
-  }
+  private lazy val typeToLogger: Map[String, Logger] = Map (
+    "info" -> Logger(LoggerFactory.getLogger("info")),
+    "warn" -> Logger(LoggerFactory.getLogger("warn")),
+    "error" -> Logger(LoggerFactory.getLogger("error")),
+    "trace" -> Logger(LoggerFactory.getLogger("trace")),
+    "debug" -> Logger(LoggerFactory.getLogger("debug"))
+  )
 
-  override def log(level: Level, data: String): Unit = {
-    logImpl(level, data, slf4j.LoggerFactory.getLogger(level.toString.toLowerCase))
-  }
+  def log[T <: AnyRef](level: Level, data: T): Unit = logImpl(level, data.toString, typeToLogger(level.toString.toLowerCase))
+  def log(level: Level, data: String): Unit = logImpl(level, data, typeToLogger(level.toString.toLowerCase))
 
-  private def logImpl(level: Level, data: String, logger: slf4j.Logger): Unit = {
+  private def logImpl(level: Level, data: String, logger: Logger): Unit = {
     level match {
       case Level.DEBUG => logger.debug(data)
       case Level.ERROR => logger.error(data)
@@ -42,11 +36,11 @@ class FileLogger extends LoggerBase {
 object FileLogger extends FileLogger
 
 class MockedLogger extends LoggerBase {
-  override def log[T <: AnyRef](level: Level, data: T): Unit = {}
-  override def log(level: Level, data: String): Unit = {}
+  def log[T <: AnyRef](level: Level, data: T): Unit = {}
+  def log(level: Level, data: String): Unit = {}
 }
 
-class Logger(val loggers: List[LoggerBase]) extends LoggerBase {
+class ApplicationLogger(val loggers: List[LoggerBase]) extends LoggerBase {
 
   override def log[T <: AnyRef](level: Level, data: T): Unit = {
     log(level, data.toString)
@@ -57,19 +51,19 @@ class Logger(val loggers: List[LoggerBase]) extends LoggerBase {
   }
 }
 
-object LoggerFactory {
-  def get: Logger = {
+object ApplicationLoggerFactory {
+  def get: LoggerBase = {
     val loggers: List[LoggerBase] = AppConfiguration.loggingDestinations.map {
-      case FileDestination => new ThreadLogger()
+      case FileDestination => new FileLogger()
       case DoNotLog =>        new MockedLogger()
       case _ =>               new MockedLogger()
     }
-    new Logger(loggers)
+    new ApplicationLogger(loggers)
   }
 }
 
-object Logger {
-  private val logger: Logger = LoggerFactory.get
+object ApplicationLogger {
+  private val logger: LoggerBase = ApplicationLoggerFactory.get
 
   def info[T <: AnyRef](data: T): Unit = logger.log(Level.INFO, data)
   def info(data: String): Unit = logger.log(Level.INFO, data)

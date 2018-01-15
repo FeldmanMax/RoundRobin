@@ -2,7 +2,7 @@ package services
 
 import com.google.inject.Inject
 import com.google.inject.name.Named
-import logging.Logger
+import logging.ApplicationLogger
 import models.Connection
 import repositories.ConfigurationRepository
 
@@ -11,7 +11,7 @@ class ConfigurationService @Inject() (
                                      ) {
 
   def loadConnection(connectionName: String): Either[String, Connection] = {
-    Logger.info(s"${this.getClass} -> loading connection")
+    ApplicationLogger.info(s"${this.getClass} -> loading connection")
     configRepository.loadConnection(connectionName)
   }
 

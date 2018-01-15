@@ -12,5 +12,6 @@ libraryDependencies ++= Seq(
   "joda-time" % "joda-time" % "2.9.7",
   "com.github.cb372" %% "scalacache-guava" % "0.10.0",
   "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.8.8",
-  "org.slf4j" % "slf4j-log4j12" % "1.7.25" % Test,
+  "com.typesafe.scala-logging" %% "scala-logging" % "3.7.2",
+  "ch.qos.logback" % "logback-classic" % "1.2.3",
   "net.codingwell" %% "scala-guice" % "4.1.1")
