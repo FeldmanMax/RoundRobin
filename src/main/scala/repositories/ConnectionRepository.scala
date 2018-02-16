@@ -1,7 +1,7 @@
 package repositories
 
 import cache.TimedCache
-import models.Connection
+import models.internal.Connection
 
 class ConnectionRepository(val cache: TimedCache[String, Connection]) {
 

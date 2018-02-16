@@ -1,7 +1,7 @@
 package services
 
 import cache.ConnectionsCache
-import models.Connection
+import models.internal.Connection
 import org.scalatest.FunSuite
 import utils.ConnectionCreator
 

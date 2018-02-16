@@ -1,9 +1,9 @@
 package repositories
 
 import logging.ApplicationLogger
-import models.Connection
-import utils.Serialization.JsonSerialization
-import utils.{AppConfiguration, FileSystemService}
+import models.internal.Connection
+import serialization.ConnectionSerializer
+import utils.{AppConfiguration, FileSystemService, Serialization}
 
 trait ConfigurationRepository {
   def loadConnection(name: String): Either[String, Connection]
@@ -17,11 +17,7 @@ class FileConfigurationRepository(val fileService: FileSystemService) extends Co
   def loadConnection(name: String): Either[String, Connection] = {
     ApplicationLogger.info(s"${this.getClass} -> loading connection")
     fileService.filesByExtension(configurationLocation, ".json").right.flatMap { files =>
-      val results: List[Either[String, List[Connection]]] = files.map { fileName =>
-        fileService.loadFile(s"$configurationLocation$fileName").right.flatMap { data =>
-          Right(JsonSerialization.deserialize[List[Connection]](data))
-        }
-      }
+      val results: List[Either[String, List[Connection]]] = files.map { fileName => loadConnections(fileName) }
       Right(results)
     }.right.flatMap { list =>
       val errorsToConnections = list.foldRight((List.empty[String], List.empty[Connection])) {
@@ -40,8 +36,9 @@ class FileConfigurationRepository(val fileService: FileSystemService) extends Co
 
   def loadConnections(destination: String): Either[String, List[Connection]] = {
     ApplicationLogger.info(s"${this.getClass} -> loading connections")
-    fileService.loadFile(s"$configurationLocation$destination.json").right.flatMap { data =>
-      Right(JsonSerialization.deserialize[List[Connection]](data))
-    }
+    for {
+      data <- fileService.loadFile(s"$configurationLocation$destination").right
+      decoded <- Serialization.decode[List[Connection]](data)(ConnectionSerializer.decodeConnectionList)
+    } yield decoded
   }
 }

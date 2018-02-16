@@ -1,9 +1,9 @@
 package utils
 
-import models.Point
+import models.internal.Point
 
 import scala.util.Random
-import utils.Implicits.DoubleExtension
+import utils.RoundRobinImplicits.DoubleExtension
 
 object PointGenerator {
 

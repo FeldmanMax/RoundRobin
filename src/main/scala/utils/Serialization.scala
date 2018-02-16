@@ -1,32 +1,23 @@
 package utils
 
-import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper}
-import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
+import io.circe.{Decoder, Encoder, Json}
+import io.circe.syntax._
 
 object Serialization {
-	object JsonSerialization {
-		private val mapper = new ObjectMapper() with ScalaObjectMapper
+	def encode[A](data: A)(implicit m: Encoder[A]): Either[String, Json] = try {
+		Right(data.asJson)
+	}
+	catch {
+		case ex: Exception => Left(ex.getMessage)
+	}
 
-		mapper.registerModule(DefaultScalaModule)
-		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-
-		def serialize(value: Map[Symbol, Any]): String = serialize(value.map{ case (k, v) => k.name -> v})
-		def serialize(value: Any): String = {
-			val result: String = mapper.writeValueAsString(value)
-			result
-		}
-
-		def deserialize[T: Manifest](value: String): T = mapper.readValue[T](value)
-		def deserializeSafe[T: Manifest](value: String): Either[String, T] = {
-			try {
-				Right(deserialize(value))
-			}
-			catch {
-				case ex: Exception => Left(ex.getMessage)
-			}
+	def decode[A <: AnyRef](data: String)(implicit d: Decoder[A]): Either[String, A] = try {
+		io.circe.parser.decode[A](data) match {
+			case Left(error) => Left(error.getMessage)
+			case Right(instance) => Right(instance)
 		}
 	}
+	catch {
+		case ex: Exception => Left(ex.toString)
+	}
 }
-
-

@@ -4,9 +4,11 @@ import com.google.inject.Inject
 import com.google.inject.name.Named
 import logging.ApplicationLogger
 import models._
+import models.internal.{Connection, ConnectionWeight}
 import repositories.ConnectionRepository
+import roundrobin.models.api.{ConnectionResponse, EndpointWeight, WeightRate}
 import utils.ImplicitExecutionContext
-import utils.Implicits.ListExtension
+import utils.RoundRobinImplicits.ListExtension
 
 import scala.concurrent.Future
 

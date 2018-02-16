@@ -1,6 +1,6 @@
 package repositories
 
-import models.EndpointWeight
+import roundrobin.models.api.EndpointWeight
 
 trait WeightRepository {
 

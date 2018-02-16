@@ -1,7 +1,9 @@
 package utils
 
-import models.{Connection, ConnectionEndpoint, ConnectionGeneralInfo}
-import utils.Serialization.JsonSerialization
+
+import models.internal.{Connection, ConnectionEndpoint, ConnectionGeneralInfo}
+import serialization.ConnectionSerializer
+//import utils.Serialization.JsonSerialization
 
 trait ConnectionCreator extends WeightCreator {
 	def getConnection(generalInfo: ConnectionGeneralInfo, nameToWeight: Map[String, Int]): Connection = {
@@ -15,11 +17,17 @@ trait ConnectionCreator extends WeightCreator {
 
 	def getSerializedConnection(): String = {
     val connection: Connection = getConnection(ConnectionGeneralInfo("test"), Map("first" -> 100))
-    JsonSerialization.serialize(connection)
+		Serialization.encode[Connection](connection)(ConnectionSerializer.encodeConnection) match {
+			case Left(error) => throw new Exception(error)
+			case Right(data) => data.toString()
+ 		}
 	}
 
 	def getSerializedConnection(generalInfo: ConnectionGeneralInfo, nameToWeight: Map[String, Int]): String = {
 		val connection: Connection = getConnection(generalInfo, Map("first" -> 100))
-		JsonSerialization.serialize(connection)
+		Serialization.encode[Connection](connection)(ConnectionSerializer.encodeConnection) match {
+			case Left(error) => throw new Exception(error)
+			case Right(data) => data.toString()
+		}
 	}
 }

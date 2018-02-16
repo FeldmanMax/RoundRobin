@@ -1,7 +1,8 @@
 package utils
 
 import cache.ConnectionsCache
-import models.{Point, EndpointWeight}
+import models.internal.Point
+import roundrobin.models.api.EndpointWeight
 import services.PointsService
 
 trait WeightCreator {

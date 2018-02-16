@@ -1,7 +1,8 @@
 package api
 
-import models.WeightRate
 import org.scalatest.FunSuite
+import roundrobin.api.ConnectionAPI
+import roundrobin.models.api.WeightRate
 
 class ConnectionAPISuite extends FunSuite {
   test("next with dependency injection") {

@@ -3,7 +3,7 @@ package services
 import com.google.inject.Inject
 import com.google.inject.name.Named
 import logging.ApplicationLogger
-import models.Connection
+import models.internal.Connection
 import repositories.ConfigurationRepository
 
 class ConfigurationService @Inject() (
@@ -15,7 +15,7 @@ class ConfigurationService @Inject() (
     configRepository.loadConnection(connectionName)
   }
 
-  def loadConnections(destination: String): Either[String, List[Connection]] = {
-    configRepository.loadConnections(destination)
+  def loadConnections(fileName: String): Either[String, List[Connection]] = {
+    configRepository.loadConnections(fileName)
   }
 }

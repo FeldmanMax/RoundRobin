@@ -1,8 +1,9 @@
 package utils
 
 import cache.TimedCache
-import models.{Connection, EndpointWeight}
+import models.internal.Connection
 import repositories.{ConnectionRepository, InMemoryWeightRepository, WeightRepository}
+import roundrobin.models.api.EndpointWeight
 import services.{ConnectionService, PointsService, WeightService}
 
 import scala.concurrent.ExecutionContext.Implicits.global

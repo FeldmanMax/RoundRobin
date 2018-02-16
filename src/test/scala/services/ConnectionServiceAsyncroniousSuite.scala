@@ -1,11 +1,10 @@
 package services
 
-import models.{Connection, ConnectionGeneralInfo, ConnectionWeight, WeightRate}
+import models.internal.{Connection, ConnectionGeneralInfo}
 import org.joda.time.DateTime
 import org.scalatest.{BeforeAndAfter, FunSuite}
-import repositories.{ConnectionRepository, WeightRepository}
+import roundrobin.models.api.WeightRate
 import utils._
-
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
@@ -26,7 +25,7 @@ class ConnectionServiceAsyncroniousSuite extends FunSuite
         getWeightReadFuture(rounds, connection, connectionService),
         getWeightReadFuture(rounds, connection, connectionService), updateConnectionFuture(100, sleepTimeMillis = 10, connectionService)))
     val lists: List[List[(DateTime, String)]] = Await.result[List[List[(DateTime, String)]]](future, Duration.Inf)
-    val sorted: List[(DateTime, String)] = lists.flatten.sortBy(x=>x._1)(Implicits.JodaOrdering.dateTimeOrdering)
+    val sorted: List[(DateTime, String)] = lists.flatten.sortBy(x=>x._1)(RoundRobinImplicits.JodaOrdering.dateTimeOrdering)
     val groupedByString: Map[String, List[(DateTime, String)]] = sorted.groupBy(x=>x._2)
     val stringToAmount: Map[String, Int] = groupedByString.map(x=>x._1 -> x._2.size)
     val dsds = 10

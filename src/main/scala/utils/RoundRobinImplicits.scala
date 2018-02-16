@@ -5,16 +5,12 @@ import java.io.Closeable
 import com.google.common.cache.CacheBuilder
 import org.joda.time.DateTime
 
-import scalacache.ScalaCache
-import scalacache.guava.GuavaCache
-
-object Implicits {
+object RoundRobinImplicits {
 	implicit class DoubleExtension(double: Double) {
 		def isEqual(other: Double, epsilon: Double): Boolean = Math.abs(double - other) < epsilon
 	}
 
 	private lazy val connectionCacheInstance = CacheBuilder.newBuilder().build[String, Object]()
-	implicit val connectionCache = ScalaCache(new GuavaCache(connectionCacheInstance))
 
 	object JodaOrdering {
 		implicit def dateTimeOrdering: Ordering[DateTime] = Ordering.fromLessThan(_ isBefore _)
@@ -37,6 +33,12 @@ object Implicits {
 	implicit class ListExtension[T](list: List[Either[String, T]]) {
 		def eitherMessage(): String = {
 			list.filter(x=>x.isLeft).map(x=>x.left.get) mkString "\n"
+		}
+
+		def allRightOrError(): Either[String, List[T]] = {
+			val eitherMessage: String = this.eitherMessage()
+			if(eitherMessage.isEmpty)	Right(list.map(x=>x.right.get))
+			else											Left(eitherMessage)
 		}
 	}
 }

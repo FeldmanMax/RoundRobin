@@ -1,6 +1,6 @@
 package logging
 
-import models.Point
+import models.internal.Point
 import org.scalatest.FunSuite
 import org.slf4j.event.Level
 import utils.FileSystemService

@@ -1,8 +1,9 @@
 package services
 
 import cache.TimedCache
-import models._
+import models.internal.{Connection, ConnectionGeneralInfo}
 import org.scalatest.{BeforeAndAfter, FunSuite}
+import roundrobin.models.api.{ConnectionResponse, EndpointWeight, WeightRate}
 import utils.{ConfigurationServiceCreator, ConnectionCreator, ConnectionServiceCreator}
 
 import scala.concurrent.ExecutionContext.Implicits.global

@@ -1,7 +1,6 @@
-package models
+package models.internal
 
 import utils.Consts
-
 case class Point(x: Double, y: Double) {
 	def - (other: Point): Double = {
 		val dist = Math.sqrt(Math.pow(x - other.x, 2) + Math.pow(y - other.y, 2))
@@ -9,10 +8,4 @@ case class Point(x: Double, y: Double) {
 	}
 
 	override def toString: String = s"(x:$x, y:$y)"
-}
-
-case class EndpointWeight(endPointName: String, points: List[Point]) {
-	def - (other: Point): Double = points.map(x=>x - other).min
-	def size: Int = points.length
-	override def toString: String = s"name: $endPointName, amount: ${points.size}"
 }

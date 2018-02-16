@@ -1,6 +1,7 @@
 package utils
 
-import models.{EndpointWeight, Point}
+import models.internal.Point
+import roundrobin.models.api.EndpointWeight
 
 object PointsCalculator {
 

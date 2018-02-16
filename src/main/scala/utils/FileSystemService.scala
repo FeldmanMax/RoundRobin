@@ -1,12 +1,26 @@
 package utils
 
-import java.io.{Closeable, File}
-import utils.Implicits.CloseableExtension
-import scala.io.BufferedSource
+import java.io.File
+
+import logging.ApplicationLogger
+
+import scala.io.{BufferedSource, Source}
 
 class FileSystemService {
   def loadFile(path: String): Either[String, String] = {
-    io.Source.fromFile(path).using[String]((source: Closeable) => source.asInstanceOf[BufferedSource].getLines() mkString "")
+    ApplicationLogger.info(s"${this.getClass} -> load file -> $path")
+    try {
+      val buffer: BufferedSource = Source.fromFile(path)
+      try {
+        val retValue: String = (buffer.getLines() mkString " ").toString
+        ApplicationLogger.info(s"${this.getClass} -> load file -> $path -> FINISH OK!")
+        Right(retValue)
+      }
+      finally buffer.close()
+    }
+    catch {
+      case ex: Exception => Left(ex.getMessage)
+    }
   }
 
   def filesByExtension(path: String, extension: String): Either[String, List[String]] = {

@@ -3,8 +3,9 @@ package services
 import javax.inject.Named
 
 import com.google.inject.Inject
-import models.{Connection, EndpointWeight, Point, WeightRate}
+import models.internal.{Connection, Point}
 import repositories.WeightRepository
+import roundrobin.models.api.{EndpointWeight, WeightRate}
 import utils.{Consts, PointsCalculator}
 
 class WeightService @Inject() (@Named("points_service") 		val pointsService: PointsService,
@@ -31,8 +32,10 @@ class WeightService @Inject() (@Named("points_service") 		val pointsService: Poi
 	def next(groups: List[EndpointWeight]): EndpointWeight = nextImpl(groups, pointsService.getPoint)
 	def getOrDefault(name: String, default: Option[EndpointWeight] = None): Either[String, EndpointWeight] = weightRepository.get(name, default)
 	def getConnectionWeight(connection: Connection): List[EndpointWeight] = {
-		val list = connection.endpointNames.map { endpointName => getOrDefault(endpointName, Option(create(endpointName)))
-		}.filter(x=>x.isRight).map(x=>x.right.get)
+		val list = connection.endpointNames
+			.map { endpointName => getOrDefault(endpointName, Option(create(endpointName)))}
+			.filter(x=>x.isRight)
+			.map(x=>x.right.get)
 		list
 	}
 

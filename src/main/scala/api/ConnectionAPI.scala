@@ -1,10 +1,10 @@
-package api
+package roundrobin.api
 
 import com.google.inject.{Guice, Injector}
 import dependencyInjection.RoundRobinInjectionModule
-import models.{ConnectionResponse, ConnectionWeight, EndpointWeight, WeightRate}
+import models.internal.ConnectionWeight
+import roundrobin.models.api.{ConnectionResponse, EndpointWeight, WeightRate}
 import services.ConnectionService
-
 import scala.concurrent.Future
 
 object ConnectionAPI {

@@ -1,7 +1,7 @@
 package repositories
 
 import cache.TimedCache
-import models.EndpointWeight
+import roundrobin.models.api.EndpointWeight
 
 class InMemoryWeightRepository (val weightsCache: TimedCache[String, EndpointWeight]) extends WeightRepository {
   def get(name: String, default: Option[EndpointWeight] = None): Either[String, EndpointWeight] = {

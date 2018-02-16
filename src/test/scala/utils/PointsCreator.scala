@@ -1,6 +1,6 @@
 package utils
 
-import models.Point
+import models.internal.Point
 import services.PointsService
 
 trait PointsCreator {

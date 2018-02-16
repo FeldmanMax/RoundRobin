@@ -1,7 +1,7 @@
 package services
 
 import com.google.inject.Inject
-import models.Point
+import models.internal.Point
 import utils.{Consts, PointGenerator}
 
 class PointsService @Inject()(){

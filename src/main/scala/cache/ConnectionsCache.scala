@@ -1,6 +1,7 @@
 package cache
 
-import models.{Connection, EndpointWeight}
+import models.internal.Connection
+import roundrobin.models.api.EndpointWeight
 
 object ConnectionsCache {
   import scala.concurrent.ExecutionContext.Implicits._

@@ -1,7 +1,8 @@
 package services
 
-import models.Connection
+import models.internal.Connection
 import org.scalatest.FunSuite
+import roundrobin.api.ConnectionAPI
 import utils.ConfigurationServiceCreator
 
 class ConfigurationServiceSuite extends FunSuite with ConfigurationServiceCreator{
@@ -14,6 +15,13 @@ class ConfigurationServiceSuite extends FunSuite with ConfigurationServiceCreato
     loadedConnection match {
       case Left(left) => assert(false, left)
       case Right(conn) => assert(conn.endpointsList.lengthCompare(4) == 0)
+    }
+  }
+
+  test("load http_response_200") {
+    ConnectionAPI.next("http_response_200") match {
+      case Left(left) => fail(left)
+      case Right(res) => assert(res.connectionName == "http_response_200")
     }
   }
 }

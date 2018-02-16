@@ -1,8 +1,9 @@
 package services
 
-import models.{EndpointWeight, Point}
+import models.internal.Point
 import org.scalatest.{BeforeAndAfter, FunSuite}
-import utils.{WeightCreator, PointsCreator}
+import roundrobin.models.api.EndpointWeight
+import utils.{PointsCreator, WeightCreator}
 
 class PointsServiceSuite extends FunSuite with BeforeAndAfter with PointsCreator with WeightCreator {
 
