@@ -27,10 +27,16 @@ class FileConfigurationRepository(val fileService: FileSystemService) extends Co
       Right(errorsToConnections)
     }.right.flatMap { case (errors, connections) =>
       if(errors.nonEmpty) Left(errors mkString "\n")
-      else                connections.find(conn => conn.info.name == name) match {
-                            case None => Left("Not found")
-                            case Some(retValue) => Right(retValue)
-                          }
+      else                findConnection(name, connections)
+    }
+  }
+
+  private def findConnection(name: String, connections: List[Connection]) = {
+    connections.find(conn => conn.info.name == name) match {
+      case None => Left("Not found")
+      case Some(retValue) =>
+        if (retValue.info.is_active)  Right(retValue)
+        else                          Left(s"${retValue.info.name} is deactivated")
     }
   }
 

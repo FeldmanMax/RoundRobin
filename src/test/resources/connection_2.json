@@ -3,24 +3,29 @@
     {
       "info": {
         "name": "connection_with_4_simple_endpoints",
-        "isUsingConnections": false
+        "isUsingConnections": false,
+        "is_active": true
       },
       "endpointsList": [
         {
           "name": "endpoint_A",
-          "value": "value_A"
+          "value": "value_A",
+          "is_active": true
         },
         {
           "name": "endpoint_B",
-          "value": "value_B"
+          "value": "value_B",
+          "is_active": true
         },
         {
           "name": "endpoint_C",
-          "value": "value_C"
+          "value": "value_C",
+          "is_active": true
         },
         {
           "name": "endpoint_D",
-          "value": "value_D"
+          "value": "value_D",
+          "is_active": true
         }
       ]
     }

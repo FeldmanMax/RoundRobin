@@ -1,0 +1,108 @@
+{
+  "connections": [
+    {
+      "info": {
+        "name": "one_inactive",
+        "isUsingConnections": false,
+        "is_active": true
+      },
+      "endpointsList": [
+        {
+          "name": "one_inactive_a",
+          "value": "value_A",
+          "is_active": false
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "two_inactive",
+        "isUsingConnections": false,
+        "is_active": true
+      },
+      "endpointsList": [
+        {
+          "name": "two_inactive_a",
+          "value": "value_A",
+          "is_active": false
+        },
+        {
+          "name": "two_inactive_b",
+          "value": "value_B",
+          "is_active": false
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "one_active",
+        "isUsingConnections": false,
+        "is_active": true
+      },
+      "endpointsList": [
+        {
+          "name": "one_inactive_a",
+          "value": "value_A",
+          "is_active": true
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "two_active",
+        "isUsingConnections": false,
+        "is_active": true
+      },
+      "endpointsList": [
+        {
+          "name": "two_active_a",
+          "value": "value_A",
+          "is_active": true
+        },
+        {
+          "name": "two_active_b",
+          "value": "value_A",
+          "is_active": true
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "one_active_one_inactive",
+        "isUsingConnections": false,
+        "is_active": true
+      },
+      "endpointsList": [
+        {
+          "name": "one_active_one_inactive_a",
+          "value": "value_A",
+          "is_active": false
+        },
+        {
+          "name": "one_active_one_inactive_b",
+          "value": "value_A",
+          "is_active": true
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "inactive_connection",
+        "isUsingConnections": false,
+        "is_active": false
+      },
+      "endpointsList": [
+        {
+          "name": "one_active_one_inactive_a",
+          "value": "value_A",
+          "is_active": false
+        },
+        {
+          "name": "one_active_one_inactive_b",
+          "value": "value_A",
+          "is_active": true
+        }
+      ]
+    }
+  ]
+}

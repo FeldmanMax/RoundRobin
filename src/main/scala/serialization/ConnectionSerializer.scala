@@ -57,7 +57,8 @@ object ConnectionSerializer {
     override def apply(info: ConnectionGeneralInfo): Json = {
       val members: List[KeyJsonValuePair] = List (
         ("name", Json.fromString(info.name)),
-        ("isUsingConnections", Json.fromBoolean(info.isUsingConnections))
+        ("isUsingConnections", Json.fromBoolean(info.isUsingConnections)),
+        ("is_active", Json.fromBoolean(info.is_active))
       )
       Json.obj(members: _ *)
     }
@@ -68,7 +69,8 @@ object ConnectionSerializer {
       for {
         name <- c.downField("name").as[String]
         isUsingConnections <- c.downField("isUsingConnections").as[Boolean]
-      } yield ConnectionGeneralInfo(name, isUsingConnections)
+        is_active <- c.downField("is_active").as[Boolean]
+      } yield ConnectionGeneralInfo(name, isUsingConnections, is_active)
     }
   }
 
@@ -76,7 +78,8 @@ object ConnectionSerializer {
     override def apply(info: ConnectionEndpoint): Json = {
       val members: List[KeyJsonValuePair] = List (
         ("name", Json.fromString(info.name)),
-        ("value", Json.fromString(info.value))
+        ("value", Json.fromString(info.value)),
+        ("is_active", Json.fromBoolean(info.is_active))
       )
       Json.obj(members: _ *)
     }
@@ -87,7 +90,8 @@ object ConnectionSerializer {
       for {
         name <- c.downField("name").as[String]
         value <- c.downField("value").as[String]
-      } yield ConnectionEndpoint(name, value)
+        is_active <- c.downField("is_active").as[Boolean]
+      } yield ConnectionEndpoint(name, value, is_active)
     }
   }
 }

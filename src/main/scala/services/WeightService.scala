@@ -32,7 +32,7 @@ class WeightService @Inject() (@Named("points_service") 		val pointsService: Poi
 	def next(groups: List[EndpointWeight]): EndpointWeight = nextImpl(groups, pointsService.getPoint)
 	def getOrDefault(name: String, default: Option[EndpointWeight] = None): Either[String, EndpointWeight] = weightRepository.get(name, default)
 	def getConnectionWeight(connection: Connection): List[EndpointWeight] = {
-		val list = connection.endpointNames
+		val list = connection.activeEndpointNames
 			.map { endpointName => getOrDefault(endpointName, Option(create(endpointName)))}
 			.filter(x=>x.isRight)
 			.map(x=>x.right.get)

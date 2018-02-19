@@ -16,7 +16,7 @@ class ConnectionServiceAsyncroniousSuite extends FunSuite
   with ConnectionServiceCreator {
 
   test("scenario a - many readers and one updater") {
-    val connection: Connection = getConnection(ConnectionGeneralInfo("name", false), Map("endpoint_a" -> 100))
+    val connection: Connection = getConnection(ConnectionGeneralInfo("name"), Map("endpoint_a" -> 100))
     val rounds: Int = 100000
 
     val connectionService: ConnectionService = getConnectionService()

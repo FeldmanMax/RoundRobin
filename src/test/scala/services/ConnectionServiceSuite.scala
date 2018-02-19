@@ -237,6 +237,14 @@ class ConnectionServiceSuite extends FunSuite
 		Thread.sleep(2000)
 	}
 
+	test("load inactive connection") {
+		val connectionService: ConnectionService = getConnectionService()
+		connectionService.load("inactive_connection") match {
+			case Left(error) => assert(error == "inactive_connection is deactivated")
+			case Right(_) => fail("loaded inactive_connection")
+		}
+	}
+
 	private def isWithinRatio(avg: Int, amount: Int, delta: Double): Boolean = {
 		val min: Int = (avg * (1 - delta)).toInt
 		val max: Int = (avg * (1 + delta)).toInt
