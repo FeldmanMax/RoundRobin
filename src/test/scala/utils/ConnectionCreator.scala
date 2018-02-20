@@ -1,16 +1,14 @@
 package utils
 
-
-import models.internal.{Connection, ConnectionEndpoint, ConnectionGeneralInfo}
+import models.internal._
 import serialization.ConnectionSerializer
-//import utils.Serialization.JsonSerialization
 
 trait ConnectionCreator extends WeightCreator {
-	def getConnection(generalInfo: ConnectionGeneralInfo, nameToWeight: Map[String, Int]): Connection = {
+	def getConnection(generalInfo: ConnectionGeneralInfo, nameToWeight: Map[String, Int], metadata: ConnectionMetadata[String] = ConnectionMetadata(List.empty)): Connection = {
 		val endpoints: Map[String, ConnectionEndpoint] = nameToWeight
 			.map { case (name, weight) => getWeight(name, weight) }
-			.map { weight => weight.endPointName -> ConnectionEndpoint(weight.endPointName, "", true) }.toMap
-		Connection(generalInfo, endpoints.values.toList)
+			.map { weight => weight.endPointName -> ConnectionEndpoint(KeyValue[String](weight.endPointName, ""), true) }.toMap
+		Connection(generalInfo, endpoints.values.toList, metadata)
 	}
 
   def getDefaultConnection(name: String): Connection = getConnection(ConnectionGeneralInfo(name), Map("first" -> 100))

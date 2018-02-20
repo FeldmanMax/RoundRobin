@@ -245,6 +245,16 @@ class ConnectionServiceSuite extends FunSuite
 		}
 	}
 
+	test("load connection_with_metadata") {
+		getConnectionService().load("connection_with_metadata") match {
+			case Left(error) => fail(error)
+			case Right(connection) =>
+				assert(connection.metadata.hasMetadata)
+				assert(connection.metadata.list.lengthCompare(1) == 0)
+				assert(connection.metadata.list.head.key == "key")
+		}
+	}
+
 	private def isWithinRatio(avg: Int, amount: Int, delta: Double): Boolean = {
 		val min: Int = (avg * (1 - delta)).toInt
 		val max: Int = (avg * (1 + delta)).toInt

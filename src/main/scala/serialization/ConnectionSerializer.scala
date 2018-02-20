@@ -1,21 +1,20 @@
 package serialization
 
 import io.circe.Decoder.Result
-import models.internal.{Connection, ConnectionEndpoint, ConnectionGeneralInfo}
-import utils.Serialization
-import utils.RoundRobinImplicits._
+import models.internal._
+import utils.InternalTypes.KeyJsonValuePair
+import serialization.KeyValueSerializer._
 
 object ConnectionSerializer {
   import io.circe._
   import io.circe.syntax._
 
-  private type KeyJsonValuePair = (String, Json)
-
   implicit val encodeConnection: Encoder[Connection] = new Encoder[Connection] {
     override def apply(a: Connection): Json = {
       val members = List[KeyJsonValuePair](
         ("info", a.info.asJson),
-        ("endpointsList", a.endpointsList.asJson)
+        ("endpointsList", a.endpointsList.asJson),
+        ("metadata", a.metadata.list.asJson)
       )
       Json.obj(members: _ *)
     }
@@ -37,10 +36,7 @@ object ConnectionSerializer {
 
   implicit val encoderConnectionList: Encoder[List[Connection]] = new Encoder[List[Connection]] {
     override def apply(info: List[Connection]): Json = {
-      val members = List[KeyJsonValuePair](
-        ("connections", info.map(_.asJson).asJson)
-      )
-      Json.obj(members: _ *)
+      Json.obj(List[KeyJsonValuePair](("connections", info.map(_.asJson).asJson)): _ *)
     }
   }
 
@@ -49,7 +45,16 @@ object ConnectionSerializer {
       for {
         info <- c.downField("info").as[ConnectionGeneralInfo]
         endpointsList <- c.downField("endpointsList").as[List[ConnectionEndpoint]]
-      } yield Connection(info, endpointsList)
+      } yield Connection(info, endpointsList, handleMetadata(c))
+    }
+  }
+
+  // Metadata is an OPTIONAL configuration.
+  private def handleMetadata(c: HCursor): ConnectionMetadata[String] = {
+    try {
+      ConnectionMetadata[String](c.downField("metadata").as[List[KeyValue[String]]].getOrElse(List.empty[KeyValue[String]]))
+    } catch {
+      case _: Exception => ConnectionMetadata[String](List.empty[KeyValue[String]])
     }
   }
 
@@ -77,8 +82,8 @@ object ConnectionSerializer {
   implicit val encodeConnectionEndpoint: Encoder[ConnectionEndpoint] = new Encoder[ConnectionEndpoint] {
     override def apply(info: ConnectionEndpoint): Json = {
       val members: List[KeyJsonValuePair] = List (
-        ("name", Json.fromString(info.name)),
-        ("value", Json.fromString(info.value)),
+        ("name", Json.fromString(info.info.key)),
+        ("value", Json.fromString(info.info.value)),
         ("is_active", Json.fromBoolean(info.is_active))
       )
       Json.obj(members: _ *)
@@ -91,7 +96,7 @@ object ConnectionSerializer {
         name <- c.downField("name").as[String]
         value <- c.downField("value").as[String]
         is_active <- c.downField("is_active").as[Boolean]
-      } yield ConnectionEndpoint(name, value, is_active)
+      } yield ConnectionEndpoint(KeyValue[String](name, value), is_active)
     }
   }
 }

@@ -103,6 +103,31 @@
           "is_active": true
         }
       ]
+    },
+    {
+      "info": {
+        "name": "connection_with_metadata",
+        "isUsingConnections": false,
+        "is_active": true
+      },
+      "endpointsList": [
+        {
+          "name": "one_active_one_inactive_a",
+          "value": "value_A",
+          "is_active": false
+        },
+        {
+          "name": "one_active_one_inactive_b",
+          "value": "value_A",
+          "is_active": true
+        }
+      ],
+      "metadata": [
+        {
+          "key": "key",
+          "value": "value"
+        }
+      ]
     }
   ]
 }
