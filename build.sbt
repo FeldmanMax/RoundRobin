@@ -16,3 +16,5 @@ libraryDependencies ++= Seq(
   "io.circe" %% "circe-core" % "0.8.0",
   "io.circe" %% "circe-generic"% "0.8.0",
   "io.circe" %% "circe-parser" % "0.8.0")
+
+unmanagedJars in Compile += file(baseDirectory.value + "/lib/InfrastructureBaseModule.jar")

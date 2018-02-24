@@ -2,8 +2,9 @@ package repositories
 
 import logging.ApplicationLogger
 import models.internal.Connection
-import serialization.ConnectionSerializer
-import utils.{AppConfiguration, FileSystemService, Serialization}
+import serialization.{ConnectionSerializer, Serialization}
+import services.FileSystemService
+import utils.AppConfiguration
 
 trait ConfigurationRepository {
   def loadConnection(name: String): Either[String, Connection]

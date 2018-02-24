@@ -1,7 +1,7 @@
 package utils
 
 import models.internal._
-import serialization.ConnectionSerializer
+import serialization.{ConnectionSerializer, Serialization}
 
 trait ConnectionCreator extends WeightCreator {
 	def getConnection(generalInfo: ConnectionGeneralInfo, nameToWeight: Map[String, Int], metadata: ConnectionMetadata[String] = ConnectionMetadata(List.empty)): Connection = {

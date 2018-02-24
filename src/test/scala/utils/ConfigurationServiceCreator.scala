@@ -1,7 +1,7 @@
 package utils
 
 import repositories.FileConfigurationRepository
-import services.ConfigurationService
+import services.{ConfigurationService, FileSystemService}
 
 trait ConfigurationServiceCreator {
   def configServiceWithFileConfiguration(): ConfigurationService = {

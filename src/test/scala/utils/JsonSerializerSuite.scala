@@ -2,6 +2,7 @@ package utils
 
 import models.internal.{Connection, ConnectionGeneralInfo}
 import org.scalatest.FunSuite
+import serialization.Serialization
 
 class JsonSerializerSuite extends FunSuite with ConnectionCreator {
   test("Serialize/Deserialize") {

@@ -1,20 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration scan="true">
+<configuration scan="true" debug="true">
     <appender name="FILE_INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/tmp/log_info.log</file>
+        <file>/tmp/log_info_test.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/tmp/log_info.%d{yyyy-MM-dd-HH-mm}.log</fileNamePattern>
+            <fileNamePattern>/tmp/log_info_test.%d{yyyy-MM-dd-HH-mm}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <charset>UTF-8</charset>
+            <pattern>%d %-4relative [%thread] %-5level - %msg%n</pattern>
+        </encoder>
+    </appender>
 
-
+    <appender name="FILE_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/tmp/log_error_test.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/tmp/log_err_test.%d{yyyy-MM-dd-HH-mm}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <charset>UTF-8</charset>
             <pattern>%d %-4relative [%thread] - %msg%n</pattern>
         </encoder>
     </appender>
 
-    <logger name="info">
+    <appender name="FILE_TRACE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/tmp/log_trace_test.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/tmp/log_trace_test.%d{yyyy-MM-dd-HH-mm}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <charset>UTF-8</charset>
+            <pattern>%d %-4relative [%thread] - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE_DEBUG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/tmp/log_debug_test.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/tmp/log_debug_test.%d{yyyy-MM-dd-HH-mm}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <charset>UTF-8</charset>
+            <pattern>%d %-4relative [%thread] - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="info" level="INFO" additivity="false">
         <appender-ref ref="FILE_INFO"/>
     </logger>
+    <logger name="error" level="ERROR" additivity="false">
+        <appender-ref ref="FILE_ERROR"/>
+    </logger>
+    <logger name="trace" level="TRACE" additivity="false">
+        <appender-ref ref="FILE_TRACE"/>
+    </logger>
+    <logger name="debug" level="DEBUG" additivity="false">
+        <appender-ref ref="FILE_DEBUG"/>
+    </logger>
+
 </configuration>

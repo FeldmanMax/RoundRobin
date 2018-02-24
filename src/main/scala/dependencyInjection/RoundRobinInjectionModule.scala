@@ -5,8 +5,7 @@ import com.google.inject.AbstractModule
 import com.google.inject.name.Names
 import net.codingwell.scalaguice.ScalaModule
 import repositories._
-import services.{ConfigurationService, ConnectionService, PointsService, WeightService}
-import utils.FileSystemService
+import services._
 
 class RoundRobinInjectionModule extends AbstractModule with ScalaModule {
   def configure(): Unit = {
