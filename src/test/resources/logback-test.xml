@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" debug="true">
     <appender name="FILE_INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/tmp/log_info_test.log</file>
+        <file>/tmp/infra_base_info_test.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/tmp/log_info_test.%d{yyyy-MM-dd-HH-mm}.log</fileNamePattern>
+            <fileNamePattern>/tmp/infra_base_info_test.%d{yyyy-MM-dd-HH-mm}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
@@ -13,9 +13,9 @@
     </appender>
 
     <appender name="FILE_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/tmp/log_error_test.log</file>
+        <file>/tmp/infra_base_error_test.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/tmp/log_err_test.%d{yyyy-MM-dd-HH-mm}.log</fileNamePattern>
+            <fileNamePattern>/tmp/infra_base_err_test.%d{yyyy-MM-dd-HH-mm}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
@@ -25,9 +25,9 @@
     </appender>
 
     <appender name="FILE_TRACE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/tmp/log_trace_test.log</file>
+        <file>/tmp/infra_base_trace_test.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/tmp/log_trace_test.%d{yyyy-MM-dd-HH-mm}.log</fileNamePattern>
+            <fileNamePattern>/tmp/infra_base_trace_test.%d{yyyy-MM-dd-HH-mm}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
@@ -37,9 +37,9 @@
     </appender>
 
     <appender name="FILE_DEBUG" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/tmp/log_debug_test.log</file>
+        <file>/tmp/infra_base_debug_test.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/tmp/log_debug_test.%d{yyyy-MM-dd-HH-mm}.log</fileNamePattern>
+            <fileNamePattern>/tmp/infra_base_debug_test.%d{yyyy-MM-dd-HH-mm}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">

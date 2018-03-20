@@ -1,5 +1,7 @@
 package models.internal
 
+import models.KeyValue
+
 final case class Connection(info: 					ConnectionGeneralInfo,
 														endpointsList: 	List[ConnectionEndpoint],
 														metadata: 			ConnectionMetadata[String]) {
@@ -15,7 +17,4 @@ case class ConnectionEndpoint(info: KeyValue[String], is_active: Boolean) {
 }
 case class ConnectionMetadata[T](list: List[KeyValue[T]]) {
 	def hasMetadata: Boolean = list.nonEmpty
-}
-case class KeyValue[T](key: String, value: T) {
-	override def toString: String = s"key: $key, value: ${value.toString}"
 }

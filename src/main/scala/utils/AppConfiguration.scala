@@ -1,7 +1,7 @@
 package utils
 
 import com.typesafe.config.{Config, ConfigFactory}
-import logging.{DoNotLog, FileDestination, LogDestination}
+import logger.{DoNotLog, FileDestination, LogDestination}
 
 object AppConfiguration {
   private val config: Config = ConfigFactory.load()

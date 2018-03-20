@@ -143,9 +143,9 @@ class ConnectionServiceSuite extends FunSuite
 		}
 	}
 
-	test("80000 request - equal distribution for connection of connections") {
+	test("40000 request - equal distribution for connection of connections") {
 		val connectionService: ConnectionService = getConnectionService()
-		val rounds: Int = 80000
+		val rounds: Int = 40000
 		var arrayBuffer: List[ConnectionResponse] = List.empty
 
 		(0 until rounds).foreach { _ =>
@@ -157,7 +157,7 @@ class ConnectionServiceSuite extends FunSuite
 			name -> responses.size
 		}.filterNot { case (_, count) =>
 			isWithinRatio(20000, count, 0.2)
-		}.foreach { case (name, count) => fail(s"$name $count") }
+		}.foreach { case (name, count) => fail(s"The endpoint: $name had count: $count") }
 	}
 
 	test("reduce endpoint") {

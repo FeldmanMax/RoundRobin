@@ -2,8 +2,7 @@ package services
 
 import com.google.inject.Inject
 import com.google.inject.name.Named
-import logging.ApplicationLogger
-import models._
+import logger.ApplicationLogger
 import models.internal.{Connection, ConnectionWeight}
 import repositories.ConnectionRepository
 import roundrobin.models.api.{ConnectionResponse, EndpointWeight, WeightRate}
@@ -41,7 +40,7 @@ class ConnectionService @Inject() ( @Named("weight_service")        val weightSe
   }
 
   def next(connectionName: String): Either[String, ConnectionResponse] = {
-    ApplicationLogger.info(s"${this.getClass} -> next")
+    ApplicationLogger.info(s"${this.getClass} -> next $connectionName")
     connectionRepository.get(connectionName) match {
       case Left(_) =>           load(connectionName).right.flatMap { connection => nextConnection(connection) }
       case Right(connection) => nextConnection(connection)

@@ -1,13 +1,13 @@
 package services
 
-import models.internal.{Connection, ConnectionGeneralInfo}
+import models.internal.Connection
 import org.joda.time.DateTime
 import org.scalatest.{BeforeAndAfter, FunSuite}
 import roundrobin.models.api.WeightRate
 import utils._
+
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, Future}
+import scala.concurrent.Future
 
 class ConnectionServiceAsyncroniousSuite extends FunSuite
   with BeforeAndAfter
@@ -15,21 +15,21 @@ class ConnectionServiceAsyncroniousSuite extends FunSuite
   with ConfigurationServiceCreator
   with ConnectionServiceCreator {
 
-  test("scenario a - many readers and one updater") {
-    val connection: Connection = getConnection(ConnectionGeneralInfo("name"), Map("endpoint_a" -> 100))
-    val rounds: Int = 100000
-
-    val connectionService: ConnectionService = getConnectionService()
-    val future: Future[List[List[(DateTime, String)]]] = Future.sequence(
-      List(getWeightReadFuture(rounds, connection, connectionService),
-        getWeightReadFuture(rounds, connection, connectionService),
-        getWeightReadFuture(rounds, connection, connectionService), updateConnectionFuture(100, sleepTimeMillis = 10, connectionService)))
-    val lists: List[List[(DateTime, String)]] = Await.result[List[List[(DateTime, String)]]](future, Duration.Inf)
-    val sorted: List[(DateTime, String)] = lists.flatten.sortBy(x=>x._1)(RoundRobinImplicits.JodaOrdering.dateTimeOrdering)
-    val groupedByString: Map[String, List[(DateTime, String)]] = sorted.groupBy(x=>x._2)
-    val stringToAmount: Map[String, Int] = groupedByString.map(x=>x._1 -> x._2.size)
-    val dsds = 10
-  }
+//  test("scenario a - many readers and one updater") {
+//    val connection: Connection = getConnection(ConnectionGeneralInfo("name"), Map("endpoint_a" -> 100))
+//    val rounds: Int = 100000
+//
+//    val connectionService: ConnectionService = getConnectionService()
+//    val future: Future[List[List[(DateTime, String)]]] = Future.sequence(
+//      List(getWeightReadFuture(rounds, connection, connectionService),
+//        getWeightReadFuture(rounds, connection, connectionService),
+//        getWeightReadFuture(rounds, connection, connectionService), updateConnectionFuture(100, sleepTimeMillis = 10, connectionService)))
+//    val lists: List[List[(DateTime, String)]] = Await.result[List[List[(DateTime, String)]]](future, Duration.Inf)
+//    val sorted: List[(DateTime, String)] = lists.flatten.sortBy(x=>x._1)(RoundRobinImplicits.JodaOrdering.dateTimeOrdering)
+//    val groupedByString: Map[String, List[(DateTime, String)]] = sorted.groupBy(x=>x._2)
+//    val stringToAmount: Map[String, Int] = groupedByString.map(x=>x._1 -> x._2.size)
+//    val dsds = 10
+//  }
 
   private def getWeightReadFuture(rounds: Int, connection: Connection, connectionService: ConnectionService): Future[List[(DateTime, String)]] = {
     Future {

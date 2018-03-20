@@ -1,6 +1,6 @@
 package repositories
 
-import logging.ApplicationLogger
+import logger.ApplicationLogger
 import models.internal.Connection
 import serialization.{ConnectionSerializer, Serialization}
 import services.FileSystemService

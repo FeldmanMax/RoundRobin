@@ -1,9 +1,10 @@
 package serialization
 
 import io.circe.Decoder.Result
+import models.KeyValue
 import models.internal._
-import utils.InternalTypes.KeyJsonValuePair
 import serialization.KeyValueSerializer._
+import utils.InternalTypes.KeyJsonValuePair
 
 object ConnectionSerializer {
   import io.circe._

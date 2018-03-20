@@ -28,6 +28,31 @@
           "is_active": true
         }
       ]
+    },
+    {
+      "info": {
+        "name": "connection_with_endpoints_A_B",
+        "isUsingConnections": false,
+        "is_active": true
+      },
+      "endpointsList": [
+        {
+          "name": "endpoint_A_B_A",
+          "value": "value_A",
+          "is_active": true
+        },
+        {
+          "name": "endpoint_A_B_B",
+          "value": "value_B",
+          "is_active": true
+        }
+      ],
+      "metadata": [
+        {
+          "key": "key",
+          "value": "value"
+        }
+      ]
     }
   ]
 }

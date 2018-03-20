@@ -2,7 +2,7 @@ package services
 
 import com.google.inject.Inject
 import com.google.inject.name.Named
-import logging.ApplicationLogger
+import logger.ApplicationLogger
 import models.internal.Connection
 import repositories.ConfigurationRepository
 

@@ -12,6 +12,12 @@
           "value": "http://localhost/http/get/200",
           "is_active": true
         }
+      ],
+      "metadata": [
+        {
+          "key": "key",
+          "value": "value"
+        }
       ]
     },
     {
@@ -25,6 +31,12 @@
           "name": "300",
           "value": "http://localhost/http/get/300",
           "is_active": true
+        }
+      ],
+      "metadata": [
+        {
+          "key": "key",
+          "value": "value"
         }
       ]
     },
@@ -40,6 +52,12 @@
           "value": "http://localhost/http/get/400",
           "is_active": true
         }
+      ],
+      "metadata": [
+        {
+          "key": "key",
+          "value": "value"
+        }
       ]
     },
     {
@@ -53,6 +71,12 @@
           "name": "500",
           "value": "http://localhost/http/get/500",
           "is_active": true
+        }
+      ],
+      "metadata": [
+        {
+          "key": "key",
+          "value": "value"
         }
       ]
     }

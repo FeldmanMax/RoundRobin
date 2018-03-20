@@ -1,5 +1,6 @@
 package utils
 
+import models.KeyValue
 import models.internal._
 import serialization.{ConnectionSerializer, Serialization}
 
